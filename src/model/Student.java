@@ -1,8 +1,9 @@
 package model;
+import java.io.Serializable;
 
 // 学生信息类, 处理学生基本信息
-
-public class Student {
+// 实现Serializable接口
+public class Student implements Serializable{
     // 所有属性全设为String
     private String className;    // 班级
     private String name;         // 姓名
