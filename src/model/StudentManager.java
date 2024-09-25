@@ -58,4 +58,22 @@ public class StudentManager {
         return students;
     }
 
+<<<<<<< HEAD
+=======
+    private void saveStudents() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            oos.writeObject(students);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadStudents() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            students = (List<Student>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+>>>>>>> 4cbab367a00d873c2049a039beaee4da6e7baf26
 }
