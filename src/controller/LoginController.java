@@ -36,7 +36,7 @@ public class LoginController {
 
             // 调用 isValidUser 方法验证登录。
             if (isValidUser(username, password)) {
-                // 登陆成功提示
+                // 登陆成功弹出提示框
                 JOptionPane.showMessageDialog(loginView, "Login successful!");
                 // 打开主页面视图，并控制其逻辑
                 MainMenuView mainMenuView = new MainMenuView();
@@ -51,7 +51,7 @@ public class LoginController {
         }
 
         private boolean isValidUser(String username, String password) {
-            // 这里实现验证用户登录的验证逻辑
+            // 这里实现验证用户登录的验证逻辑，不是很会
             return true;
         }
     }
@@ -60,7 +60,7 @@ public class LoginController {
     // 内部类，用于处理注册按钮点击事件
     class RegisterListener implements ActionListener {
         @Override
-        // 当注册按钮被点击时执行
+        // 事件监听器，当注册按钮被点击时执行
         public void actionPerformed(ActionEvent e) {
             // 创建一个新的注册视图
             RegisterView registerView = new RegisterView();

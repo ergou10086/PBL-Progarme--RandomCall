@@ -58,8 +58,9 @@ public class StudentManagementView extends JFrame {
 
         // 显示学生信息
         displayArea = new JTextArea();   // 多行文本区域对象
-        JScrollPane scrollPane = new JScrollPane(displayArea);   // 滚动条
-        // 布局管理器，将panel 组件添加到容器的顶部，将 scrollPane 添加到容器的中心
+        JScrollPane scrollPane = new JScrollPane(displayArea);   // 添加到滚动面板，以免溢出
+
+        // 布局管理器，将panel 组件添加到容器的顶部，将滚动面板添加到容器的中心
         add(panel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
