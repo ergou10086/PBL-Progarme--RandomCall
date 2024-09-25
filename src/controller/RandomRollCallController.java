@@ -1,11 +1,9 @@
 package controller;
 
 import java.io.IOException;
-
 import model.Student;
 import model.StudentManager;
 import view.RandomRollCallView;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,10 +31,18 @@ public class RandomRollCallController {
             Random random = new Random();
 
             if (isGroupSelected) {
-                // 随机选择一个小组
-                // 这里需要实现具体的逻辑
+                // Implement group selection logic
+                /*
+                List<String> groups = studentManager.getGroups(selectedClass); // Assuming this method exists
+                if (!groups.isEmpty()) {
+                    String selectedGroup = groups.get(random.nextInt(groups.size()));
+                    JOptionPane.showMessageDialog(randomRollCallView, "Selected Group: " + selectedGroup);
+                } else {
+                    JOptionPane.showMessageDialog(randomRollCallView, "No groups available");
+                }
+                */
             } else if (isStudentSelected) {
-                // 随机选择一个学生
+                // Randomly select a student
                 if (!students.isEmpty()) {
                     Student selectedStudent = students.get(random.nextInt(students.size()));
                     JOptionPane.showMessageDialog(randomRollCallView, "Selected Student: " + selectedStudent.getName());
@@ -46,6 +52,5 @@ public class RandomRollCallController {
             }
         }
     }
-
-
 }
+

@@ -14,7 +14,7 @@ public class RandomRollCallView extends JFrame {
     public RandomRollCallView() {
         setTitle("Random Roll Call");       // 标题
         setSize(300, 200);     // 大小
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   //退出
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);   // 只关闭本页面退出
         setLocationRelativeTo(null);       // 居中
 
         // 创建一个网格布局面板，该管理器将面板分为 4 行 1 列的布局。

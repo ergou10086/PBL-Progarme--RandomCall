@@ -39,6 +39,8 @@ public class RegisterView extends JFrame {
         add(panel);
     }
 
+
+
     // getter
     public JButton getRegisterButton() {
         return registerButton;
@@ -54,5 +56,23 @@ public class RegisterView extends JFrame {
 
     public String getConfirmPassword() {
         return new String(confirmPasswordField.getPassword());
+    }
+
+
+    //setter
+    public void setUsernameField(JTextField usernameField) {
+        this.usernameField = usernameField;
+    }
+
+    public void setPasswordField(JPasswordField passwordField) {
+        this.passwordField = passwordField;
+    }
+
+    public void setConfirmPasswordField(JPasswordField confirmPasswordField) {
+        this.confirmPasswordField = confirmPasswordField;
+    }
+
+    public void setRegisterButton(JButton registerButton) {
+        this.registerButton = registerButton;
     }
 }

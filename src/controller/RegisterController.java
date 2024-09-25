@@ -8,60 +8,71 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.HashMap;
 
+// 注册控制器类
 public class RegisterController {
-    private RegisterView registerView;
-    private HashMap<String, String> userDatabase;
+    private RegisterView registerView; // 注册视图对象
+    private HashMap<String, String> userDatabase; // 用户数据库，存储用户名和密码
 
+    // 构造函数，初始化注册视图和用户数据库
     public RegisterController(RegisterView registerView) {
-        this.registerView = registerView;
-        this.registerView.getRegisterButton().addActionListener(new RegisterListener());
-        loadUserDatabase();
+        this.registerView = registerView; // 注册视图
+        this.registerView.getRegisterButton().addActionListener(new RegisterListener()); // 为注册按钮添加监听器
+        loadUserDatabase(); // 加载用户数据库
     }
 
+    // 加载用户数据库的方法
     private void loadUserDatabase() {
-        userDatabase = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
+        userDatabase = new HashMap<>(); // 初始化用户数据库
+        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) { // 使用BufferedReader读取用户文件
             String line;
+            // 按行读取文件
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(":");
-                if (parts.length == 2) {
-                    userDatabase.put(parts[0], parts[1]);
+                String[] parts = line.split(":"); // 以冒号分割用户名和密码
+                if (parts.length == 2) {  // 确保有两个部分,这样用户名和密码都能被正确读取
+                    userDatabase.put(parts[0], parts[1]); // 将用户名和密码存入数据库，严格按照两部分
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException e) { // 捕获IO异常
+            e.printStackTrace(); // 打印异常信息
         }
     }
 
+    // 保存用户数据库的方法
     private void saveUserDatabase() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt"))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt"))) { // 使用BufferedWriter写入用户文件
+            // 遍历用户数据库
             for (String username : userDatabase.keySet()) {
-                bw.write(username + ":" + userDatabase.get(username));
-                bw.newLine();
+                bw.write(username + ":" + userDatabase.get(username)); // 写入用户名和密码
+                bw.newLine(); // 换行
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException e) { // 捕获IO异常
+            e.printStackTrace(); // 打印异常信息
         }
     }
 
+    // 内部类，处理注册按钮的点击事件
     class RegisterListener implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e) { // 重写方法，事件监听
+            // 获取输入的用户名、密码和确认密码
             String username = registerView.getUsername();
             String password = registerView.getPassword();
             String confirmPassword = registerView.getConfirmPassword();
 
+            // 检查用户名和密码输入的有效性
             if (!username.isEmpty() && !password.isEmpty() && password.equals(confirmPassword)) {
+                // 检查用户名是否已存在
                 if (userDatabase.containsKey(username)) {
-                    JOptionPane.showMessageDialog(registerView, "Username already exists!");
+                    JOptionPane.showMessageDialog(registerView, "用户名已存在！"); // 弹出对话框提示
                 } else {
-                    userDatabase.put(username, password);
-                    saveUserDatabase();
-                    JOptionPane.showMessageDialog(registerView, "Registration successful!");
-                    registerView.dispose(); // Close registration window
+                    userDatabase.put(username, password); // 将新用户添加到数据库
+                    saveUserDatabase(); // 保存用户数据库
+                    JOptionPane.showMessageDialog(registerView, "注册成功！"); // 弹出成功提示
+                    registerView.dispose(); // 关闭注册窗口
                 }
             } else {
-                JOptionPane.showMessageDialog(registerView, "Please fill in all fields correctly!");
+                // 如果输入无效，提示用户
+                JOptionPane.showMessageDialog(registerView, "请正确填写所有字段！");
             }
         }
     }

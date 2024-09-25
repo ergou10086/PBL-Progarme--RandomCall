@@ -18,7 +18,7 @@ public class StudentManagementView extends JFrame {
     public StudentManagementView() {
         setTitle("Student Management");        // 窗口标题
         setSize(400, 300);        // 窗口大小
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   //退出
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);   // 只关闭本页面退出
         setLocationRelativeTo(null);            // 居中
 
         // 创建一个6行2列的网格布局面板
