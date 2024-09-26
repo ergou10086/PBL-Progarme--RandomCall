@@ -1,3 +1,10 @@
+java面向对象要求实现的PBL项目之RandomCall随机点名
+使用swing和awt进行gui开发
+
+
+
+
+
 上传代码  
 cd 文件夹名  
 git init  
