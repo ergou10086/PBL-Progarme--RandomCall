@@ -28,8 +28,7 @@ public class RandomRollCallController {
     class StartRollCallListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // 获取视图中选中的班级
-            String selectedClass = randomRollCallView.getSelectedClass();
+
             // 获取选择的是小组随机还是学生随机
             boolean isGroupSelected = randomRollCallView.isGroupSelected();
             boolean isStudentSelected = randomRollCallView.isStudentSelected();
