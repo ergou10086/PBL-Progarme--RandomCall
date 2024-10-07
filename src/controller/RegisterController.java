@@ -11,7 +11,7 @@ import java.util.HashMap;
 // 注册控制器类
 public class RegisterController {
     private RegisterView registerView; // 注册视图对象
-    private HashMap<String, String> userDatabase; // 用户数据库，存储用户名和密码
+    private HashMap<String, String> EuserDatabase; // 用户数据库，存储用户名和密码
 
     // 构造函数，初始化注册视图和用户数据库
     public RegisterController(RegisterView registerView) {
@@ -22,14 +22,14 @@ public class RegisterController {
 
     // 加载用户数据库的方法
     private void loadUserDatabase() {
-        userDatabase = new HashMap<>(); // 初始化用户数据库
+        EuserDatabase = new HashMap<>(); // 初始化用户数据库
         try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) { // 使用BufferedReader读取用户文件
             String line;
             // 按行读取文件
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(":"); // 以冒号分割用户名和密码
                 if (parts.length == 2) {  // 确保有两个部分,这样用户名和密码都能被正确读取
-                    userDatabase.put(parts[0], parts[1]); // 将用户名和密码存入数据库，严格按照两部分
+                    EuserDatabase.put(parts[0], parts[1]); // 将用户名和密码存入数据库，严格按照两部分
                 }
             }
         } catch (IOException e) { // 捕获IO异常
@@ -41,8 +41,8 @@ public class RegisterController {
     private void saveUserDatabase() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt"))) { // 使用BufferedWriter写入用户文件
             // 遍历用户数据库
-            for (String username : userDatabase.keySet()) {
-                bw.write(username + ":" + userDatabase.get(username)); // 写入用户名和密码
+            for (String username : EuserDatabase.keySet()) {
+                bw.write(username + ":" + EuserDatabase.get(username)); // 写入用户名和密码
                 bw.newLine(); // 换行
             }
         } catch (IOException e) { // 捕获IO异常
@@ -62,10 +62,10 @@ public class RegisterController {
             // 检查用户名和密码输入的有效性
             if (!username.isEmpty() && !password.isEmpty() && password.equals(confirmPassword)) {
                 // 检查用户名是否已存在
-                if (userDatabase.containsKey(username)) {
+                if (EuserDatabase.containsKey(username)) {
                     JOptionPane.showMessageDialog(registerView, "用户名已存在！"); // 弹出对话框提示
                 } else {
-                    userDatabase.put(username, password); // 将新用户添加到数据库
+                    EuserDatabase.put(username, password); // 将新用户添加到数据库
                     saveUserDatabase(); // 保存用户数据库
                     JOptionPane.showMessageDialog(registerView, "注册成功！"); // 弹出成功提示
                     registerView.dispose(); // 关闭注册窗口

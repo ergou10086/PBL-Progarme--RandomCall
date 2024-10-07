@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*; // 导入事件处理的包
+import java.awt.image.*;
 
 // 登录界面类
 public class LoginView extends JFrame {
@@ -9,6 +11,9 @@ public class LoginView extends JFrame {
     private JPasswordField passwordField;    // 用于密码输入的文本字段组件，接受密码
     private JButton loginButton;             // 创建按钮的 Swing 组件变量，用于存放登录按钮
     private JButton registerButton;          // registerButton存放注册按钮
+    private JRadioButton rememberMeButton;  // 记住密码单选框
+    private JRadioButton nextNotLoginCheckBox; // 复选框：下次不登录
+    private BufferedImage backgroundImage;   // 背景图片
 
     public LoginView() {
         setTitle("Login");                                  // 设置窗口标题为 "Login"
@@ -16,8 +21,8 @@ public class LoginView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    // 设置窗口关闭时候结束
         setLocationRelativeTo(null);                       // 窗口居中显示
 
-        // 创建一个面板panel，使用网格布局，3行2列。
-        JPanel panel = new JPanel(new GridLayout(3, 2));
+        // 创建一个面板panel，使用网格布局，4行2列。
+        JPanel panel = new JPanel(new GridLayout(4, 2)); // 修改为5行2列以适应新增的复选框
 
         // 添加用户名标签，并创建用户名输入框，把标签加入panel
         panel.add(new JLabel("Username:"));
@@ -29,6 +34,14 @@ public class LoginView extends JFrame {
         passwordField = new JPasswordField();
         panel.add(passwordField);
 
+        // 记住密码的单选框
+        rememberMeButton = new JRadioButton("Remember Me");
+        panel.add(rememberMeButton);
+
+        // 创建下次不登录的复选框
+        nextNotLoginCheckBox = new JRadioButton("Next time don't login");
+        panel.add(nextNotLoginCheckBox);
+
         // 创建登录按钮并添加到面板
         loginButton = new JButton("Login");
         panel.add(loginButton);
@@ -39,8 +52,19 @@ public class LoginView extends JFrame {
 
         // 将面板添加到框架中
         add(panel);
-    }
 
+        // 为下次无需输入密码的添加监听器
+        nextNotLoginCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (nextNotLoginCheckBox.isSelected()) {
+                    // 弹出提示窗口
+                    JOptionPane.showMessageDialog(LoginView.this, "别，你要是懒了，我就不会写了", "你先别急", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+
+    }
 
     // getter方法
     public JButton getLoginButton() {

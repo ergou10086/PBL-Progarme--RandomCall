@@ -2,8 +2,10 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
 
-// 管理学生信息的页面类
 public class StudentManagementView extends JFrame {
     private JTextField classNameField;    // 班级名的文本框
     private JTextField nameField;         // 学生名的文本框
@@ -11,7 +13,7 @@ public class StudentManagementView extends JFrame {
     private JTextField studentIdField;    // 学生id的文本框
     private JButton addButton;            // 添加按钮
     private JButton removeButton;         // 移除按钮
-    private JButton BackToMainButton;     // 返回主菜单按钮
+    private JButton backToMainButton;     // 返回主菜单按钮
     private JTextArea displayArea;        // 文本区域
 
     // 构造方法
@@ -20,6 +22,97 @@ public class StudentManagementView extends JFrame {
         setSize(400, 300);        // 窗口大小
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);   // 只关闭本页面退出
         setLocationRelativeTo(null);            // 居中
+
+        // 创建菜单栏
+        JMenuBar menuBar = new JMenuBar();
+
+        // 创建文件菜单
+        JMenu fileMenu = new JMenu("文件");
+        JMenuItem readItem = new JMenuItem("读取点名册");
+        JMenuItem exportItem = new JMenuItem("导出点名册");
+        fileMenu.add(readItem);
+        fileMenu.add(exportItem);
+
+        // 创建设置菜单
+        JMenu settingsMenu = new JMenu("设置");
+        JMenuItem changeResolutionItem = new JMenuItem("更改分辨率");
+        changeResolutionItem.setAccelerator(KeyStroke.getKeyStroke('R', ActionEvent.CTRL_MASK));
+
+        JMenuItem changeLanguageItem = new JMenuItem("更改语言");
+        changeLanguageItem.setAccelerator(KeyStroke.getKeyStroke('L', ActionEvent.CTRL_MASK));
+
+        JMenuItem changeModeItem = new JMenuItem("更改模式");
+        changeModeItem.setAccelerator(KeyStroke.getKeyStroke('M', ActionEvent.CTRL_MASK));
+
+        settingsMenu.add(changeResolutionItem);
+        settingsMenu.add(changeLanguageItem);
+        settingsMenu.add(changeModeItem);
+
+        // 创建帮助菜单
+        JMenu helpMenu = new JMenu("帮助");
+        JMenuItem helpItem = new JMenuItem("介绍文档");
+        helpItem.setAccelerator(KeyStroke.getKeyStroke('H', ActionEvent.CTRL_MASK));
+        helpMenu.add(helpItem);
+
+        // 将菜单添加到菜单栏
+        menuBar.add(fileMenu);
+        menuBar.add(settingsMenu);
+        menuBar.add(helpMenu);
+
+        // 更改分辨率
+        JMenu resolutionMenu = new JMenu("分辨率");
+        changeResolutionItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 显示分辨率选项
+                JOptionPane.showMessageDialog(null, resolutionMenu, "选择分辨率", JOptionPane.PLAIN_MESSAGE);
+            }
+        });
+
+        // 为读取和导出选项添加事件监听
+        readItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    // TODO: 添加读取文件的逻辑
+                }
+                System.out.println("读取学生信息的逻辑未实现");
+            }
+        });
+
+        exportItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser saveFileChooser = new JFileChooser();
+                int returnValue = saveFileChooser.showSaveDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File fileToSave = saveFileChooser.getSelectedFile();
+                    // TODO: 添加保存文件的逻辑
+                }
+                System.out.println("保存学生信息的逻辑未实现");
+            }
+        });
+
+        // 帮助菜单的事件监听器
+        helpItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int response = JOptionPane.showConfirmDialog(null, "这都要Readme?你去玩galgame吧", "那我顺从你", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (response == JOptionPane.OK_OPTION) {
+                    try {
+                        Desktop.getDesktop().browse(new java.net.URI("https://www.touchgal.io/"));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        // 将菜单栏设置为窗口的菜单栏
+        setJMenuBar(menuBar);
 
         // 创建一个6行2列的网格布局面板
         JPanel panel = new JPanel(new GridLayout(6, 2));
@@ -53,8 +146,8 @@ public class StudentManagementView extends JFrame {
         panel.add(removeButton);
 
         // 回到主菜单按钮
-        BackToMainButton = new JButton("Back to Main Menu");
-        panel.add(BackToMainButton);
+        backToMainButton = new JButton("Back to Main Menu");
+        panel.add(backToMainButton);
 
         // 显示学生信息
         displayArea = new JTextArea();   // 多行文本区域对象
@@ -75,14 +168,13 @@ public class StudentManagementView extends JFrame {
     }
 
     public JButton getBackToMainButton() {
-        return BackToMainButton;
+        return backToMainButton;
     }
 
     // 在 JTextArea 中显示传入的学生信息。
     public void displayStudents(String students) {
         displayArea.setText(students);
     }
-
 
     // 分别返回各个文本框中的内容
     public String getClassName() {
@@ -101,4 +193,3 @@ public class StudentManagementView extends JFrame {
         return studentIdField.getText();
     }
 }
-

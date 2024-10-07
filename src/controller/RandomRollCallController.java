@@ -1,9 +1,9 @@
 package controller;
 
-import java.io.IOException;
 import model.Student;
 import model.StudentManager;
 import view.RandomRollCallView;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +16,7 @@ public class RandomRollCallController {
     private RandomRollCallView randomRollCallView; // 随机点名视图对象
     private StudentManager studentManager; // 学生管理器对象
 
-    // 控制器构造函数，初始化视图和学生管理器，并设置按钮事件监听
+    // 构造函数，初始化视图和学生管理器，并设置按钮事件监听
     public RandomRollCallController(RandomRollCallView randomRollCallView) {
         this.randomRollCallView = randomRollCallView;
         this.studentManager = new StudentManager();
@@ -28,8 +28,7 @@ public class RandomRollCallController {
     class StartRollCallListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // 获取视图中选中的班级
-            String selectedClass = randomRollCallView.getSelectedClass();
+
             // 获取选择的是小组随机还是学生随机
             boolean isGroupSelected = randomRollCallView.isGroupSelected();
             boolean isStudentSelected = randomRollCallView.isStudentSelected();
@@ -45,22 +44,24 @@ public class RandomRollCallController {
                 List<String> groups = studentManager.getGroups(selectedClass); // Assuming this method exists
                 if (!groups.isEmpty()) {
                     String selectedGroup = groups.get(random.nextInt(groups.size()));
-                    JOptionPane.showMessageDialog(randomRollCallView, "Selected Group: " + selectedGroup);
+                    randomRollCallView.appendResult("Selected Group: " + selectedGroup);
                 } else {
-                    JOptionPane.showMessageDialog(randomRollCallView, "No groups available");
+                    randomRollCallView.appendResult("No groups available");
                 }
                 */
-            // 选择学生
+                // 选择学生
             } else if (isStudentSelected) {
-
                 if (!students.isEmpty()) {
-                    // 集合容器中随机选择
+                    // 集合容器实现随机选择
                     Student selectedStudent = students.get(random.nextInt(students.size()));
-                    // 并弹出对话框告知结果
-                    JOptionPane.showMessageDialog(randomRollCallView, "Selected Student: " + selectedStudent.getName() + selectedStudent.getStudentId());
-                // 空提示
+                    // 在结果文本域中显示选中的学生
+                    randomRollCallView.appendResult("Selected Student: " + selectedStudent.getName() + " (" + selectedStudent.getStudentId() + ")");
+                    // 提示框
+                    JOptionPane.showMessageDialog(randomRollCallView, "Student selected: " + selectedStudent.getName() + " (" + selectedStudent.getStudentId() + ")");
+
                 } else {
-                    JOptionPane.showMessageDialog(randomRollCallView, "No students available");
+                    // 空提示
+                    randomRollCallView.appendResult("No students available");
                 }
             }
         }
