@@ -13,7 +13,7 @@ public class StudentManagementView extends JFrame {
     private JTextField studentIdField;    // 学生id的文本框
     private JButton addButton;            // 添加按钮
     private JButton removeButton;         // 移除按钮
-    private JButton backToMainButton;     // 返回主菜单按钮
+    private JButton backMainButton;     // 返回主菜单按钮
     private JTextArea displayArea;        // 文本区域
 
     // 构造方法
@@ -146,8 +146,14 @@ public class StudentManagementView extends JFrame {
         panel.add(removeButton);
 
         // 回到主菜单按钮
-        backToMainButton = new JButton("Back to Main Menu");
-        panel.add(backToMainButton);
+        backMainButton = new JButton("Back to Main Menu");
+        panel.add(backMainButton);
+        backMainButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
 
         // 显示学生信息
         displayArea = new JTextArea();   // 多行文本区域对象
@@ -168,7 +174,7 @@ public class StudentManagementView extends JFrame {
     }
 
     public JButton getBackToMainButton() {
-        return backToMainButton;
+        return backMainButton;
     }
 
     // 在 JTextArea 中显示传入的学生信息。

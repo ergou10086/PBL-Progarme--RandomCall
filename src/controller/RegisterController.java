@@ -11,7 +11,7 @@ import java.util.HashMap;
 // 注册控制器类
 public class RegisterController {
     private RegisterView registerView; // 注册视图对象
-    private HashMap<String, String> EuserDatabase; // 用户数据库，存储用户名和密码
+    private HashMap<String, String> EuserDatabase; // 用户数据库，按键值对存用户名和密码
 
     // 构造函数，初始化注册视图和用户数据库
     public RegisterController(RegisterView registerView) {
@@ -39,7 +39,8 @@ public class RegisterController {
 
     // 保存用户数据库的方法
     private void saveUserDatabase() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt"))) { // 使用BufferedWriter写入用户文件
+        // 使用BufferedWriter写入注册用户文件的信息到users.txt内
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt"))) {
             // 遍历用户数据库
             for (String username : EuserDatabase.keySet()) {
                 bw.write(username + ":" + EuserDatabase.get(username)); // 写入用户名和密码

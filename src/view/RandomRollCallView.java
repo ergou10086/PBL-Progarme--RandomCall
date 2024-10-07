@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class RandomRollCallView extends JFrame {
     // 页面组件
@@ -46,6 +48,12 @@ public class RandomRollCallView extends JFrame {
         // 添加回到主菜单按钮
         backMainButton = new JButton("Back to Main Menu");
         controlPanel.add(backMainButton);
+        backMainButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
 
         // 将控制面板添加到主面板的北部
         panel.add(controlPanel, BorderLayout.NORTH);
