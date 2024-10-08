@@ -11,7 +11,7 @@ import java.util.HashMap;
 // 注册控制器类
 public class RegisterController {
     private RegisterView registerView; // 注册视图对象
-    private HashMap<String, String> EuserDatabase; // 用户数据库，按键值对存用户名和密码
+    private HashMap<String, String> EuserDatabase; // 用户数据库，按键值对对存用户名和密码
 
     // 构造函数，初始化注册视图和用户数据库
     public RegisterController(RegisterView registerView) {
