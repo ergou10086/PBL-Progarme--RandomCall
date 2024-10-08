@@ -49,7 +49,7 @@ public class LoginController {
     }
 
     // 内部类，处理登录按钮点击事件。
-    class LoginListener implements ActionListener {
+    public class LoginListener implements ActionListener {
         @Override
         // 登录按钮的事件监听器
         public void actionPerformed(ActionEvent e) {
@@ -63,6 +63,7 @@ public class LoginController {
                 JOptionPane.showMessageDialog(loginView, "Login successful!");
                 // 打开主页面视图，并控制其逻辑
                 MainMenuView mainMenuView = new MainMenuView(loginView);
+                // 传入主页面视图，保证始终控制的是一个主页面和注册页面
                 MainMenuController mainMenuController = new MainMenuController(mainMenuView);
                 // 显示主页面视图
                 mainMenuView.setVisible(true);
@@ -79,9 +80,24 @@ public class LoginController {
         }
     }
 
+    // 自动登录方法
+    public void autoLogin() {
+        String defaultUsername = "admin";   // 默认用户名
+        String defaultPassword = "123456";  // 默认密码
+        if (userDatabase.containsKey(defaultUsername) && userDatabase.get(defaultUsername).equals(defaultPassword)) {
+            JOptionPane.showMessageDialog(loginView, "欢迎回来，管理员");
+            MainMenuView mainMenuView = new MainMenuView(loginView);
+            MainMenuController mainMenuController = new MainMenuController(mainMenuView);
+            mainMenuView.setVisible(true);
+            loginView.setVisible(false);
+        }else{
+            JOptionPane.showMessageDialog(loginView, "不是哥们你配错了");
+        }
+    }
+
 
     // 内部类，用于处理注册按钮点击事件
-    class RegisterListener implements ActionListener {
+    public class RegisterListener implements ActionListener {
         @Override
         // 事件监听器，当注册按钮被点击时执行
         public void actionPerformed(ActionEvent e) {
@@ -93,6 +109,7 @@ public class LoginController {
             registerView.setVisible(true);
         }
     }
+
 }
 
 

@@ -2,12 +2,15 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class RegisterView extends JFrame {
     private JTextField usernameField;              // 用于用户名输入的文本域
     private JPasswordField passwordField;          // 用于密码输入的文本域
     private JPasswordField confirmPasswordField;   // 用于确认密码的文本域
     private JButton registerButton;                // 注册按钮
+    private JButton BackToMainButton;              // 回退到主页面按钮
 
     public RegisterView() {
         setTitle("Register");          // 标题
@@ -35,6 +38,16 @@ public class RegisterView extends JFrame {
         // 关于注册按钮的控件
         registerButton = new JButton("Register");
         panel.add(registerButton);
+
+        BackToMainButton = new JButton("Back to Main Menu");
+        panel.add(BackToMainButton);
+        BackToMainButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
 
         add(panel);
     }
