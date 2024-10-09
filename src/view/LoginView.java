@@ -50,24 +50,30 @@ public class LoginView extends JFrame {
         // 创建 GridBagConstraints 对象用于设置控件位置
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(8, 8, 8, 8); // 控件之间的间距
+        gbc.insets = new Insets(10, 4, 10, 4); // 控件之间的间距
 
         // 添加用户名标签和输入框
         gbc.gridx = 0; // 第一列
         gbc.gridy = 0; // 第一行
-        backgroundPanel.add(new JLabel("Username:"), gbc);
+        JLabel usernameLabel = new JLabel("Username");
+        usernameLabel.setFont(new Font("Arial", Font.BOLD, 16)); // 设置字体和大小
+        backgroundPanel.add(usernameLabel, gbc);
 
         gbc.gridx = 1; // 第二列
-        usernameField = new JTextField(17); // 输入框宽度
+        usernameField = new JTextField(17); // 输入框长度
+        usernameField.setPreferredSize(new Dimension(45,20));   // 输入框大小
         backgroundPanel.add(usernameField, gbc);
 
         // 添加密码标签和输入框
         gbc.gridx = 0; // 第一列
         gbc.gridy = 1; // 第二行
-        backgroundPanel.add(new JLabel("Password:"), gbc);
+        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel.setFont(new Font("Arial", Font.BOLD, 16)); // 设置字体和大小
+        backgroundPanel.add(passwordLabel, gbc);
 
         gbc.gridx = 1; // 第二列
-        passwordField = new JPasswordField(17); // 密码输入框宽度
+        passwordField = new JPasswordField(17); // 密码输入框长度
+        passwordField.setPreferredSize(new Dimension(45,20));  // 输入框大小
         backgroundPanel.add(passwordField, gbc);
 
         // 记住密码的单选框
@@ -97,6 +103,7 @@ public class LoginView extends JFrame {
 
         // 将背景面板添加到框架中
         add(backgroundPanel);
+
 
         // 为下次无需输入密码的添加监听器
         nextNotLoginCheckBox.addActionListener(new ActionListener() {

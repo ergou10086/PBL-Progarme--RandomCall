@@ -39,7 +39,7 @@ public class StudentManager {
         }
     }
 
-    // 新删
+    // 之前的普通删除，每次删除最后一个
     public void removeLastStudent() {
         if (!students.isEmpty()) {
             students.remove(students.size() - 1);
@@ -53,13 +53,21 @@ public class StudentManager {
         saveStudents();
     }
 
-    /*
-    // 删
-    public void removeStudent(Student student) {
-        students.remove(student);
-        saveStudents();
+    // 更好的删除，根据索引，从1开始
+    public void removeStudentAtIndex(int index) {
+        if (index < 0 || index >= students.size()) {
+            throw new IndexOutOfBoundsException("输入的数据不合理");
+        }
+        if(!students.isEmpty()) {
+            students.remove(index);
+            saveStudents();
+        }
     }
-    */
+
+    // 改
+    public void editStudentAtIndex(int index) {
+
+    }
 
 
     // getter每次传递加载好的内容，就不用刷新了
