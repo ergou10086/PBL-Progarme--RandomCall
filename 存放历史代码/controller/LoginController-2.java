@@ -22,6 +22,7 @@ public class LoginController {
     public LoginController(LoginView loginView) {
         // 初始化 loginView 属性和主菜单视图
         this.loginView = loginView;
+        this.mainMenuView = mainMenuView;
 
         // 初始化用户数据库
         this.userDatabase = new HashMap<>();
@@ -31,7 +32,6 @@ public class LoginController {
         this.loginView.getLoginButton().addActionListener(new LoginListener());
         this.loginView.getRegisterButton().addActionListener(new RegisterListener());
     }
-
 
     // 加载用户数据库
     private void loadUserDatabase() {
@@ -48,40 +48,6 @@ public class LoginController {
         }
     }
 
-
-    // 登录逻辑实现，包括自动登录和正常登录
-    private void login(String username, String password) {
-        // 检查用户输入是否为空
-        if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(loginView, "用户名和密码不能为空!");
-            return;
-        }
-
-        if (isValidUser(username, password)) {
-            // 这里是检测为空再开，避免了多开
-            if(mainMenuView == null){
-                // 打开主页面视图，并控制其逻辑
-                mainMenuView = new MainMenuView(loginView);
-                // 传入主页面视图到主页面视图逻辑类，保证始终控制的是一个主页面和注册页面
-                new MainMenuController(mainMenuView);
-            }
-            // 登陆成功弹出提示框
-            JOptionPane.showMessageDialog(loginView, "Login successful!");
-            // 显示主页面视图
-            mainMenuView.setVisible(true);
-            // 关闭登陆页面，避免重开
-            loginView.setVisible(false);
-        } else {   //错误提示
-            JOptionPane.showMessageDialog(loginView, "Invalid username or password!");
-        }
-    }
-
-    // 用户登录的验证逻辑实现
-    private boolean isValidUser(String username, String password) {
-        return userDatabase.containsKey(username) && userDatabase.get(username).equals(password);
-    }
-
-
     // 内部类，处理登录按钮点击事件。
     public class LoginListener implements ActionListener {
         @Override
@@ -91,21 +57,47 @@ public class LoginController {
             String username = loginView.getUsername();
             String password = loginView.getPassword();
 
-            login(username, password);
+            // 调用 isValidUser 方法验证登录。
+            if (isValidUser(username, password)) {
+                // 登陆成功弹出提示框
+                JOptionPane.showMessageDialog(loginView, "Login successful!");
+                // 打开主页面视图，并控制其逻辑
+                MainMenuView mainMenuView = new MainMenuView(loginView);
+                // 传入主页面视图，保证始终控制的是一个主页面和注册页面
+                MainMenuController mainMenuController = new MainMenuController(mainMenuView);
+                // 显示主页面视图
+                mainMenuView.setVisible(true);
+                // 关闭登陆页面，避免重开
+                loginView.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(loginView, "Invalid username or password!");
+            }
         }
 
+        // 用户登录的验证逻辑实现
+        private boolean isValidUser(String username, String password) {
+            return userDatabase.containsKey(username) && userDatabase.get(username).equals(password);
+        }
     }
 
     // 自动登录方法
     public void autoLogin() {
         String defaultUsername = "admin";   // 默认用户名
         String defaultPassword = "123456";  // 默认密码
-        login(defaultUsername, defaultPassword); // 使用相同的登录方法
+        if (userDatabase.containsKey(defaultUsername) && userDatabase.get(defaultUsername).equals(defaultPassword)) {
+            JOptionPane.showMessageDialog(loginView, "欢迎回来，管理员");
+            MainMenuView mainMenuView = new MainMenuView(loginView);
+            MainMenuController mainMenuController = new MainMenuController(mainMenuView);
+            mainMenuView.setVisible(true);
+            loginView.setVisible(false);
+        }else{
+            JOptionPane.showMessageDialog(loginView, "不是哥们你配错了");
+        }
     }
 
 
     // 内部类，用于处理注册按钮点击事件
-    public static class RegisterListener implements ActionListener {
+    public class RegisterListener implements ActionListener {
         @Override
         // 事件监听器，当注册按钮被点击时执行
         public void actionPerformed(ActionEvent e) {
@@ -117,6 +109,7 @@ public class LoginController {
             registerView.setVisible(true);
         }
     }
+
 }
 
 

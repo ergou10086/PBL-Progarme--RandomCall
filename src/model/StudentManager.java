@@ -1,5 +1,6 @@
 package model;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,27 @@ public class StudentManager {
 
     // 改
     public void editStudentAtIndex(int index) {
+        if (index < 0 || index >= students.size()) {
+            throw new IndexOutOfBoundsException("输入的数据不合理");
+        }
 
+        Student student = students.get(index);
+
+        // 使用对话框获取新信息
+        String newClassName = JOptionPane.showInputDialog("请输入新的班级名:", student.getClassName());
+        String newName = JOptionPane.showInputDialog("请输入新的姓名:", student.getName());
+        String newGroup = JOptionPane.showInputDialog("请输入新的小组:", student.getGroup());
+        String newStudentId = JOptionPane.showInputDialog("请输入新的学生ID:", student.getStudentId());
+
+        // 不空则替换
+        if (newClassName != null && newName != null && newGroup != null && newStudentId != null) {
+            student.setClassName(newClassName);
+            student.setName(newName);
+            student.setGroup(newGroup);
+            student.setStudentId(newStudentId);
+        }
+        // 保存更新
+        saveStudents();
     }
 
 

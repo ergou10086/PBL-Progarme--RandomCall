@@ -122,7 +122,7 @@ public class LoginView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 DarkIntoCount += 1;
                 // 四次后暗道开放
-                if (DarkIntoCount == 4) {
+                if (DarkIntoCount % 4 == 0) {
                     // 传递当前视图，进行自动登录
                     LoginController loginController = new LoginController(LoginView.this);
                     loginController.autoLogin(); // 触发自动登录

@@ -22,6 +22,8 @@ public class StudentManagementController {
         this.studentManagementView.getAddButton().addActionListener(new AddStudentListener());
         // 删除学生按钮的事件监听器
         this.studentManagementView.getRemoveButton().addActionListener(new RemoveStudentListener());
+        // 更新学生按钮的事件监听器
+        this.studentManagementView.getEditButton().addActionListener(new UpdateStudentListener());
         // 更新显示内容
         updateDisplay();
     }
@@ -81,20 +83,20 @@ public class StudentManagementController {
     }
 
 
-    // 更改学生信息
+    // 更改学生信息的监听器类
     public class UpdateStudentListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String editInput = JOptionPane.showInputDialog(studentManagementView, "请输入你要更改的学生索引(1开)");
-            try{
+            String editInput = JOptionPane.showInputDialog(studentManagementView, "请输入你要更改的学生索引(1开):");
+            try {
                 int index = Integer.parseInt(editInput);
-                index -= 1;
+                index -= 1; // 转换为从0开始的索引
                 studentManager.editStudentAtIndex(index);
                 // 更新显示
                 updateDisplay();
-            }catch (NumberFormatException ex){
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(studentManagementView, "你好好看看你输入了个什么玩意", "瞬间爆炸", JOptionPane.ERROR_MESSAGE);
-            }catch (IndexOutOfBoundsException ex) {
+            } catch (IndexOutOfBoundsException ex) {
                 JOptionPane.showMessageDialog(studentManagementView, "我这里有这么号个人？", "瞬间爆炸", JOptionPane.ERROR_MESSAGE);
             }
         }
