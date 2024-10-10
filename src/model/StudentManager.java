@@ -40,6 +40,31 @@ public class StudentManager {
         }
     }
 
+
+    // 获取所有不重复的班级名称
+    public List<String> getAllClassNames() {
+        List<String> classNames = new ArrayList<>();
+        for (Student student : students) {
+            if (!classNames.contains(student.getClassName())) {
+                classNames.add(student.getClassName());
+            }
+        }
+        return classNames;
+    }
+
+
+    // 根据小组获取学生列表
+    public List<Student> getByStudentsInGroup(String group) {
+        List<Student> groupStudents = new ArrayList<>();
+        for (Student student : students) {
+            if (student.getGroup().equals(group)) {
+                groupStudents.add(student);
+            }
+        }
+        return groupStudents;
+    }
+
+
     // 之前的普通删除，每次删除最后一个
     public void removeLastStudent() {
         if (!students.isEmpty()) {
