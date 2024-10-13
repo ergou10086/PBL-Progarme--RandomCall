@@ -9,6 +9,7 @@ public class Student implements Serializable{
     private String name;         // 姓名
     private String group;        // 小组
     private String studentId;    // 学号
+    private String score;        // 成绩
 
     // 构造方法
     public Student(String className, String name, String group, String studentId) {
