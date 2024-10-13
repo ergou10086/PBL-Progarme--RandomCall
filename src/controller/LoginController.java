@@ -66,7 +66,10 @@ public class LoginController {
                 new MainMenuController(mainMenuView);
             }
             // 登陆成功弹出提示框
-            JOptionPane.showMessageDialog(loginView, "Login successful!");
+            if(username == "admin" && password == "123456")
+                JOptionPane.showMessageDialog(loginView, "欢迎回来，管理员!");
+            else
+                JOptionPane.showMessageDialog(loginView,"Login successfully!");
             // 显示主页面视图
             mainMenuView.setVisible(true);
             // 关闭登陆页面，避免重开
