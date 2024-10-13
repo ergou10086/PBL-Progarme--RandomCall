@@ -11,10 +11,11 @@ public class StudentManagementView extends JFrame {
     private JTextField nameField;         // 学生名的文本框
     private JTextField groupField;        // 小组名的文本框
     private JTextField studentIdField;    // 学生id的文本框
+    private JTextField scoreField;        // 学生分数的文本框
     private JButton addButton;            // 添加按钮
     private JButton removeButton;         // 移除按钮
-    private JButton editButton;          // 修改学生信息按钮
-    private JButton backMainButton;     // 返回主菜单按钮
+    private JButton editButton;           // 修改学生信息按钮
+    private JButton backMainButton;       // 返回主菜单按钮
     private JTextArea displayArea;        // 文本区域
 
     // 构造方法
@@ -134,6 +135,11 @@ public class StudentManagementView extends JFrame {
         studentIdField = new JTextField();
         panel.add(studentIdField);
 
+        //学生分数 标签
+        /*panel.add(new JLabel("Score:"));
+        scoreField = new JTextField();
+        panel.add(scoreField);*/
+
         // 添加学生按钮
         addButton = new JButton("Add Student");
         panel.add(addButton);
@@ -203,4 +209,8 @@ public class StudentManagementView extends JFrame {
     public String getStudentId() {
         return studentIdField.getText();
     }
+
+    /*public String getScore(){
+        return scoreField.getText();
+    }*/
 }

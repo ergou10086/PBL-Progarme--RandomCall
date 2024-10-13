@@ -63,7 +63,16 @@ public class StudentManager {
         }
         return groupStudents;
     }
-
+    //获取学生的分数
+    /*public List<String> getAllScore() {
+        List<String> scores = new ArrayList<>();
+        for (Student student : students) {
+            if (!scores.contains(student.getScore())) {
+                scores.add(student.getScore());
+            }
+        }
+        return scores;
+    }*/
 
     // 之前的普通删除，每次删除最后一个
     public void removeLastStudent() {

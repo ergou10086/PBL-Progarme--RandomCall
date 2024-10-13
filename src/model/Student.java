@@ -9,6 +9,7 @@ public class Student implements Serializable{
     private String name;         // 姓名
     private String group;        // 小组
     private String studentId;    // 学号
+    private String score;        // 成绩
 
     // 构造方法
     public Student(String className, String name, String group, String studentId) {
@@ -17,6 +18,10 @@ public class Student implements Serializable{
         this.group = group;
         this.studentId = studentId;
     }
+    /*public Student(String className, String name, String group, String studentId,String score) {
+        this(className,name,group,studentId);
+        this.score = score;
+    }*/
 
 
     //getter和setter
@@ -54,4 +59,8 @@ public class Student implements Serializable{
     public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
+
+   /* public String getScore(){return score;}
+
+    public void setScore(String score){this.score = score;}*/
 }

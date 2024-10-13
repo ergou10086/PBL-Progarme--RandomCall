@@ -112,6 +112,8 @@ public class StudentManagementController {
                     .append(student.getName()).append(", ")
                     .append(student.getGroup()).append(", ")
                     .append(student.getStudentId()).append("\n");
+                    /*.append(student.getStudentId()).append(",")
+                    .append(student.getScore()).append("\n");*/
         }
         // 将拼接好的字符串显示在视图中
         studentManagementView.displayStudents(sbs.toString());
