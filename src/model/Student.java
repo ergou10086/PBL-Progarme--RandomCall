@@ -9,11 +9,7 @@ public class Student implements Serializable{
     private String name;         // 姓名
     private String group;        // 小组
     private String studentId;    // 学号
-<<<<<<< HEAD
     private String score;        // 成绩，默认初值100
-=======
-    private String score;        // 成绩
->>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
 
     // 构造方法
     public Student(String className, String name, String group, String studentId, String score) {
@@ -28,10 +24,6 @@ public class Student implements Serializable{
     public Student(String className, String name, String group, String studentId) {
         this(className, name, group, studentId, "100"); // 设置默认成绩为100
     }
-    /*public Student(String className, String name, String group, String studentId,String score) {
-        this(className,name,group,studentId);
-        this.score = score;
-    }*/
 
 
     //getter和setter
@@ -70,7 +62,6 @@ public class Student implements Serializable{
         this.studentId = studentId;
     }
 
-<<<<<<< HEAD
     public String getScore() {
         return score;
     }
@@ -78,9 +69,4 @@ public class Student implements Serializable{
     public void setScore(String score) {
         this.score = score;
     }
-=======
-   /* public String getScore(){return score;}
-
-    public void setScore(String score){this.score = score;}*/
->>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
 }

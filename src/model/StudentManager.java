@@ -43,10 +43,7 @@ public class StudentManager {
 
     // 获取所有不重复的班级名称
     public List<String> getAllClassNames() {
-<<<<<<< HEAD
         // 创建一个存储班级的集合
-=======
->>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
         List<String> classNames = new ArrayList<>();
         for (Student student : students) {
             if (!classNames.contains(student.getClassName())) {
@@ -59,10 +56,7 @@ public class StudentManager {
 
     // 根据小组获取学生列表
     public List<Student> getByStudentsInGroup(String group) {
-<<<<<<< HEAD
         // 创建存储组内学生的列表，每次检索并存储
-=======
->>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
         List<Student> groupStudents = new ArrayList<>();
         for (Student student : students) {
             if (student.getGroup().equals(group)) {
@@ -71,20 +65,7 @@ public class StudentManager {
         }
         return groupStudents;
     }
-<<<<<<< HEAD
 
-=======
-    //获取学生的分数
-    /*public List<String> getAllScore() {
-        List<String> scores = new ArrayList<>();
-        for (Student student : students) {
-            if (!scores.contains(student.getScore())) {
-                scores.add(student.getScore());
-            }
-        }
-        return scores;
-    }*/
->>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
 
     // 之前的普通删除，每次删除最后一个
     public void removeLastStudent() {
@@ -111,7 +92,6 @@ public class StudentManager {
         }
     }
 
-<<<<<<< HEAD
 
     // 查
     // 使用学号查
@@ -146,8 +126,6 @@ public class StudentManager {
     }
 
 
-=======
->>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
     // 改
     public void editStudentAtIndex(int index) {
         if (index < 0 || index >= students.size()) {
@@ -161,7 +139,6 @@ public class StudentManager {
         String newName = JOptionPane.showInputDialog("请输入新的姓名:", student.getName());
         String newGroup = JOptionPane.showInputDialog("请输入新的小组:", student.getGroup());
         String newStudentId = JOptionPane.showInputDialog("请输入新的学生ID:", student.getStudentId());
-<<<<<<< HEAD
         String newStudentScore = JOptionPane.showInputDialog("请输入新的学生成绩：",student.getScore());
 
         if (isValidScore(newStudentScore)) {
@@ -190,19 +167,6 @@ public class StudentManager {
             return false; // 捕获格式错误
         }
     }
-=======
-
-        // 不空则替换
-        if (newClassName != null && newName != null && newGroup != null && newStudentId != null) {
-            student.setClassName(newClassName);
-            student.setName(newName);
-            student.setGroup(newGroup);
-            student.setStudentId(newStudentId);
-        }
-        // 保存更新
-        saveStudents();
-    }
->>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
 
 
     // getter每次传递加载好的内容，就不用刷新了
@@ -217,3 +181,4 @@ public class StudentManager {
         saveStudents();
     }
 }
+
