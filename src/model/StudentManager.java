@@ -1,5 +1,6 @@
 package model;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +9,17 @@ import java.util.List;
 public class StudentManager {
     // 用来存储Student对象的集合
     private List<Student> students = new ArrayList<>();
-    // IO方法
+    // IO方法，存储到students.dat
     private final String FILE_NAME = "students.dat";
 
-    // 构造方法改为了每次读取学生列表
+    // 构造方法改为了每次读取学生列表，实现随时刷新
     public StudentManager() {
         loadStudents();
     }
 
 
     // 保存学生信息的方法，使用IO
-    private void saveStudents() {
+    public void saveStudents() {
         try (ObjectOutputStream oosS = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             // 向输出流中写入学生信息
             oosS.writeObject(students);
@@ -39,7 +40,34 @@ public class StudentManager {
         }
     }
 
-    // 新删
+
+    // 获取所有不重复的班级名称
+    public List<String> getAllClassNames() {
+        // 创建一个存储班级的集合
+        List<String> classNames = new ArrayList<>();
+        for (Student student : students) {
+            if (!classNames.contains(student.getClassName())) {
+                classNames.add(student.getClassName());
+            }
+        }
+        return classNames;
+    }
+
+
+    // 根据小组获取学生列表
+    public List<Student> getByStudentsInGroup(String group) {
+        // 创建存储组内学生的列表，每次检索并存储
+        List<Student> groupStudents = new ArrayList<>();
+        for (Student student : students) {
+            if (student.getGroup().equals(group)) {
+                groupStudents.add(student);
+            }
+        }
+        return groupStudents;
+    }
+
+
+    // 之前的普通删除，每次删除最后一个
     public void removeLastStudent() {
         if (!students.isEmpty()) {
             students.remove(students.size() - 1);
@@ -53,13 +81,92 @@ public class StudentManager {
         saveStudents();
     }
 
-    /*
-    // 删
-    public void removeStudent(Student student) {
-        students.remove(student);
+    // 更好的删除，根据索引，从1开始
+    public void removeStudentAtIndex(int index) {
+        if (index < 0 || index >= students.size()) {
+            throw new IndexOutOfBoundsException("输入的数据不合理");
+        }
+        if(!students.isEmpty()) {
+            students.remove(index);
+            saveStudents();
+        }
+    }
+
+
+    // 查
+    // 使用学号查
+    public Student checkStudentByID(String studentId) {
+        Student foundStudent = null;
+
+        // 根据学号查找学生
+        for (Student student : students) {
+            if (student.getStudentId().equals(studentId)) {
+                foundStudent = student;
+                break;
+            }
+        }
+
+        // 如果没有找到学生，返回 null
+        return foundStudent;
+    }
+    // 使用姓名查
+    public Student checkStudentByName(String studentName) {
+        Student foundStudent = null;
+
+        // 根据学号查找学生
+        for (Student student : students) {
+            if (student.getName().equals(studentName)) {
+                foundStudent = student;
+                break;
+            }
+        }
+
+        // 如果没有找到学生，返回 null
+        return foundStudent;
+    }
+
+
+    // 改
+    public void editStudentAtIndex(int index) {
+        if (index < 0 || index >= students.size()) {
+            throw new IndexOutOfBoundsException("输入的数据不合理");
+        }
+
+        Student student = students.get(index);
+
+        // 使用对话框获取新信息
+        String newClassName = JOptionPane.showInputDialog("请输入新的班级名:", student.getClassName());
+        String newName = JOptionPane.showInputDialog("请输入新的姓名:", student.getName());
+        String newGroup = JOptionPane.showInputDialog("请输入新的小组:", student.getGroup());
+        String newStudentId = JOptionPane.showInputDialog("请输入新的学生ID:", student.getStudentId());
+        String newStudentScore = JOptionPane.showInputDialog("请输入新的学生成绩：",student.getScore());
+
+        if (isValidScore(newStudentScore)) {
+            // 替换非空输入
+            if (newClassName != null) student.setClassName(newClassName);
+            if (newName != null) student.setName(newName);
+            if (newGroup != null) student.setGroup(newGroup);
+            if (newStudentId != null) student.setStudentId(newStudentId);
+            student.setScore(newStudentScore);
+        } else {
+            JOptionPane.showMessageDialog(null, "输入的成绩无效，请输入数字！", "错误", JOptionPane.ERROR_MESSAGE);
+        }
+
         saveStudents();
     }
-    */
+
+    // 检查成绩是否为有效数字
+    private boolean isValidScore(String score) {
+        if (score == null || score.trim().isEmpty()) {
+            return false; // 空输入无效
+        }
+        try {
+            Double.parseDouble(score); // 使用包装类，转换为数字
+            return true;
+        } catch (NumberFormatException e) {
+            return false; // 捕获格式错误
+        }
+    }
 
 
     // getter每次传递加载好的内容，就不用刷新了
