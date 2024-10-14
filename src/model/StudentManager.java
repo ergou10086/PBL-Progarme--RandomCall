@@ -3,7 +3,7 @@ package model;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 // 学生列表管理类，维护学生数据
 public class StudentManager {

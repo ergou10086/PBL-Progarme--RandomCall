@@ -25,6 +25,12 @@ public class Student implements Serializable{
         this(className, name, group, studentId, "100"); // 设置默认成绩为100
     }
 
+    // 重写的toString方法
+    @Override
+    public String toString() {
+        return "姓名: " + name + ", 班级: " + className + ", 小组: " + group + ", 学生ID: " + studentId + ", 成绩: " + score;
+    }
+
 
     //getter和setter
     public String getClassName() {

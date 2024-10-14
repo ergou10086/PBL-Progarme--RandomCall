@@ -185,8 +185,9 @@ public class RandomRollCallController {
     public class CheckStudentScoreListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            // 读取学生列表，并构建字符串
             List<Student> students = studentManager.getStudents();
-            StringBuilder messageBuilder = new StringBuilder("Students and their scores:\n");
+            StringBuilder messageBuilder = new StringBuilder("学生们的成绩如下：\n");
 
             for(int i = 1; i <= students.size(); i++) {
                 Student student = students.get(i-1);
@@ -195,11 +196,12 @@ public class RandomRollCallController {
                         .append("): ").append(student.getScore()).append("\n");
             }
 
-            JTextArea textArea = new JTextArea(messageBuilder.toString());
-            textArea.setEditable(false);
+
+            JTextArea textArea = new JTextArea(messageBuilder.toString());       // 创建显示遍历学生们成绩的文本框
+            textArea.setEditable(false);      // 只读
             JScrollPane ScoreScrollPane = new JScrollPane(textArea);
             ScoreScrollPane.setPreferredSize(new Dimension(400, 300)); // 设置滚动窗口大小
-
+            // 能显示学生成绩的文本框
             JOptionPane.showMessageDialog(randomRollCallView, ScoreScrollPane, "Student Scores", JOptionPane.INFORMATION_MESSAGE);
         }
     }
