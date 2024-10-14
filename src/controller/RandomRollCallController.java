@@ -5,11 +5,17 @@ import model.StudentManager;
 import view.RandomRollCallView;
 
 import javax.swing.*;
+<<<<<<< HEAD
 import java.awt.*;
 import java.awt.event.*;
 
 import java.util.*;
 import java.util.List;
+=======
+import java.awt.event.*;
+
+import java.util.*;
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
 
 // 随机点名控制器类，实现随机点名的逻辑
 public class RandomRollCallController {
@@ -65,7 +71,11 @@ public class RandomRollCallController {
             List<Student> selectedStudents = new ArrayList<>();
 
             // 选择了全局选项则全部添加
+<<<<<<< HEAD
             if(selectedClass[0].equals("全局选项")){
+=======
+            if(selectedClass[0].equals("All Classes")){
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
                 selectedStudents.addAll(students);
             // 要不然根据选中的班级过滤学生
             }else {

@@ -13,8 +13,11 @@ public class RandomRollCallView extends JFrame {
     private JRadioButton studentRadioButton;      // 选择“随机学生"的单选标签
     private JButton startButton;                  // 开始点名操作按钮
     private JButton backMainButton;               // 回到主页面按钮
+<<<<<<< HEAD
     private JButton editScoreButton;              // 调整学生成绩
     private JButton checkStudentScoreButton;      // 查询学生成绩按钮
+=======
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
     private JTextArea resultTextArea;             // 显示随机点名结果的多行文本域
 
     public RandomRollCallView() {
@@ -28,7 +31,11 @@ public class RandomRollCallView extends JFrame {
         panel.setLayout(new BorderLayout());
 
         // 创建一个面板用于存放控件
+<<<<<<< HEAD
         JPanel controlPanel = new JPanel(new GridLayout(4, 1)); // 4 行 1 列布局
+=======
+        JPanel controlPanel = new JPanel(new GridLayout(3, 1)); // 3 行 1 列布局
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
 
         // 创建班级选择列表
         DefaultListModel<String> classListModel = new DefaultListModel<>();     // 使用 可以动态添加的JList 允许多选
@@ -36,7 +43,11 @@ public class RandomRollCallView extends JFrame {
         JScrollPane classListScrollPane = new JScrollPane(classList);    // 创建滚动列表
         controlPanel.add(new JLabel("Select Classes:"));    // 动态菜单添加标签
         classListScrollPane.setPreferredSize(new Dimension(100, 50)); // 设置列表的首选大小
+<<<<<<< HEAD
         classListModel.addElement("全局选项");     // 添加“所有班级”选项
+=======
+        classListModel.addElement("All Classes");     // 添加“所有班级”选项
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
         controlPanel.add(classListScrollPane);      // 班级选择列表添加到控件面板中
 
         // 将两个 单选按钮 组装到一个 ButtonGroup 中，实现多选框单选，并添加到控制面板
@@ -62,6 +73,7 @@ public class RandomRollCallView extends JFrame {
             }
         });
 
+<<<<<<< HEAD
         // 添加学生成绩管理按钮
         editScoreButton = new JButton("Edit Score");
         controlPanel.add(editScoreButton);
@@ -70,6 +82,8 @@ public class RandomRollCallView extends JFrame {
         checkStudentScoreButton = new JButton("Check Student Score");
         controlPanel.add(checkStudentScoreButton);
 
+=======
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
         // 将控制面板添加到主面板的北部
         panel.add(controlPanel, BorderLayout.NORTH);
 
@@ -83,6 +97,17 @@ public class RandomRollCallView extends JFrame {
         add(panel);
     }
 
+<<<<<<< HEAD
+=======
+    // getter
+    public JButton getStartButton() {
+        return startButton;
+    }
+
+    public JButton getBackMainButton() {
+        return backMainButton;
+    }
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
 
     // 获取当前选择的班级数组
     public String[] getSelectedClass() {
@@ -111,6 +136,7 @@ public class RandomRollCallView extends JFrame {
     public void appendResult(String result) {
         resultTextArea.append(result + "\n");
     }
+<<<<<<< HEAD
 
 
     // getter 和 setter
@@ -161,4 +187,6 @@ public class RandomRollCallView extends JFrame {
     public void setCheckStudentScoreButton(JButton checkStudentScoreButton) {
         this.checkStudentScoreButton = checkStudentScoreButton;
     }
+=======
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
 }
