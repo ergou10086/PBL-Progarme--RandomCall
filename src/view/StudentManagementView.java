@@ -1,25 +1,35 @@
 package view;
 
+import model.Student;
+import model.StudentManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StudentManagementView extends JFrame {
     private JTextField classNameField;    // 班级名的文本框
     private JTextField nameField;         // 学生名的文本框
     private JTextField groupField;        // 小组名的文本框
     private JTextField studentIdField;    // 学生id的文本框
+    //private JTextField studentScoreFiled;  // 学生成绩的文本框
     private JButton addButton;            // 添加按钮
     private JButton removeButton;         // 移除按钮
+    private JButton editButton;          // 修改学生信息按钮
     private JButton backMainButton;     // 返回主菜单按钮
     private JTextArea displayArea;        // 文本区域
+
+    private StudentManager studentManager;
 
     // 构造方法
     public StudentManagementView() {
         setTitle("Student Management");        // 窗口标题
-        setSize(400, 300);        // 窗口大小
+        setSize(400, 440);        // 窗口大小
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);   // 只关闭本页面退出
         setLocationRelativeTo(null);            // 居中
 
@@ -35,8 +45,13 @@ public class StudentManagementView extends JFrame {
 
         // 创建设置菜单
         JMenu settingsMenu = new JMenu("设置");
-        JMenuItem changeResolutionItem = new JMenuItem("更改分辨率");
-        changeResolutionItem.setAccelerator(KeyStroke.getKeyStroke('R', ActionEvent.CTRL_MASK));
+        JMenu changeResolutionItem = new JMenu("更改分辨率");
+        JMenuItem px1 = new JMenuItem("原始大小");
+        JMenuItem px2 = new JMenuItem("600*450");
+        JMenuItem px3 = new JMenuItem("800*600");
+        changeResolutionItem.add(px1);
+        changeResolutionItem.add(px2);
+        changeResolutionItem.add(px3);
 
         JMenuItem changeLanguageItem = new JMenuItem("更改语言");
         changeLanguageItem.setAccelerator(KeyStroke.getKeyStroke('L', ActionEvent.CTRL_MASK));
@@ -59,15 +74,6 @@ public class StudentManagementView extends JFrame {
         menuBar.add(settingsMenu);
         menuBar.add(helpMenu);
 
-        // 更改分辨率
-        JMenu resolutionMenu = new JMenu("分辨率");
-        changeResolutionItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // 显示分辨率选项
-                JOptionPane.showMessageDialog(null, resolutionMenu, "选择分辨率", JOptionPane.PLAIN_MESSAGE);
-            }
-        });
 
         // 为读取和导出选项添加事件监听
         readItem.addActionListener(new ActionListener() {
@@ -77,7 +83,7 @@ public class StudentManagementView extends JFrame {
                 int returnValue = fileChooser.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-                    // TODO: 添加读取文件的逻辑
+                    loadStudentsFromFile(selectedFile);
                 }
                 System.out.println("读取学生信息的逻辑未实现");
             }
@@ -90,7 +96,7 @@ public class StudentManagementView extends JFrame {
                 int returnValue = saveFileChooser.showSaveDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File fileToSave = saveFileChooser.getSelectedFile();
-                    // TODO: 添加保存文件的逻辑
+                    saveStudentsToFile(fileToSave);
                 }
                 System.out.println("保存学生信息的逻辑未实现");
             }
@@ -145,6 +151,10 @@ public class StudentManagementView extends JFrame {
         removeButton = new JButton("Remove Student");
         panel.add(removeButton);
 
+        //编辑学生信息按钮
+        editButton = new JButton("Edit Student");
+        panel.add(editButton);
+
         // 回到主菜单按钮
         backMainButton = new JButton("Back to Main Menu");
         panel.add(backMainButton);
@@ -164,6 +174,24 @@ public class StudentManagementView extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    private void loadStudentsFromFile(File file) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+
+            JOptionPane.showMessageDialog(null, "学生信息已成功读取！", "成功", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "读取学生信息失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void saveStudentsToFile(File file) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+
+            JOptionPane.showMessageDialog(null, "学生信息已成功保存！", "成功", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "保存学生信息失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     // 返回对应的按钮，以便其他类可以访问这些按钮。
     public JButton getAddButton() {
         return addButton;
@@ -175,6 +203,10 @@ public class StudentManagementView extends JFrame {
 
     public JButton getBackToMainButton() {
         return backMainButton;
+    }
+
+    public JButton getEditButton() {
+        return editButton;
     }
 
     // 在 JTextArea 中显示传入的学生信息。
@@ -198,4 +230,5 @@ public class StudentManagementView extends JFrame {
     public String getStudentId() {
         return studentIdField.getText();
     }
+
 }
