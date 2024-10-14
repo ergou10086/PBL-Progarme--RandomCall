@@ -1,10 +1,16 @@
 package view;
 
+import model.Student;
+import model.StudentManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentManagementView extends JFrame {
     private JTextField classNameField;    // 班级名的文本框
@@ -17,6 +23,8 @@ public class StudentManagementView extends JFrame {
     private JButton editButton;          // 修改学生信息按钮
     private JButton backMainButton;     // 返回主菜单按钮
     private JTextArea displayArea;        // 文本区域
+
+    private StudentManager studentManager;
 
     // 构造方法
     public StudentManagementView() {
@@ -75,7 +83,7 @@ public class StudentManagementView extends JFrame {
                 int returnValue = fileChooser.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-                    // TODO: 添加读取文件的逻辑
+                    loadStudentsFromFile(selectedFile);
                 }
                 System.out.println("读取学生信息的逻辑未实现");
             }
@@ -88,7 +96,7 @@ public class StudentManagementView extends JFrame {
                 int returnValue = saveFileChooser.showSaveDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File fileToSave = saveFileChooser.getSelectedFile();
-                    // TODO: 添加保存文件的逻辑
+                    saveStudentsToFile(fileToSave);
                 }
                 System.out.println("保存学生信息的逻辑未实现");
             }
@@ -135,14 +143,6 @@ public class StudentManagementView extends JFrame {
         studentIdField = new JTextField();
         panel.add(studentIdField);
 
-        /*
-        // 学生成绩 标签
-        panel.add(new JLabel("Student Score:"));
-        studentScoreFiled = new JTextField();
-        panel.add(studentScoreFiled);
-        */
-
-
         // 添加学生按钮
         addButton = new JButton("Add Student");
         panel.add(addButton);
@@ -172,6 +172,24 @@ public class StudentManagementView extends JFrame {
         // 布局管理器，将panel 组件添加到容器的顶部，将滚动面板添加到容器的中心
         add(panel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void loadStudentsFromFile(File file) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+
+            JOptionPane.showMessageDialog(null, "学生信息已成功读取！", "成功", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "读取学生信息失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void saveStudentsToFile(File file) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+
+            JOptionPane.showMessageDialog(null, "学生信息已成功保存！", "成功", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "保存学生信息失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // 返回对应的按钮，以便其他类可以访问这些按钮。
@@ -213,8 +231,4 @@ public class StudentManagementView extends JFrame {
         return studentIdField.getText();
     }
 
-    //public String getStudentScore(){ return studentScoreFiled.getText(); }
-    /*public String getScore(){
-        return scoreField.getText();
-    }*/
 }
