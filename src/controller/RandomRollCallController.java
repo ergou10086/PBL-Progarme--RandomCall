@@ -5,9 +5,17 @@ import model.StudentManager;
 import view.RandomRollCallView;
 
 import javax.swing.*;
+<<<<<<< HEAD
+import java.awt.*;
 import java.awt.event.*;
 
 import java.util.*;
+import java.util.List;
+=======
+import java.awt.event.*;
+
+import java.util.*;
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
 
 // 随机点名控制器类，实现随机点名的逻辑
 public class RandomRollCallController {
@@ -32,6 +40,13 @@ public class RandomRollCallController {
 
         // 点名按钮的事件监听器
         this.randomRollCallView.getStartButton().addActionListener(new StartRollCallListener());
+
+        // 添加编辑成绩按钮的事件监听器
+        this.randomRollCallView.getEditScoreButton().addActionListener(new EditScoreListener());
+
+        // 添加查询成绩按钮的事件监听器
+        this.randomRollCallView.getCheckStudentScoreButton().addActionListener(new CheckStudentScoreListener());
+
     }
 
     // 处理开始点名的事件的内部类
@@ -56,7 +71,11 @@ public class RandomRollCallController {
             List<Student> selectedStudents = new ArrayList<>();
 
             // 选择了全局选项则全部添加
+<<<<<<< HEAD
+            if(selectedClass[0].equals("全局选项")){
+=======
             if(selectedClass[0].equals("All Classes")){
+>>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed
                 selectedStudents.addAll(students);
             // 要不然根据选中的班级过滤学生
             }else {
@@ -127,6 +146,86 @@ public class RandomRollCallController {
                     randomRollCallView.appendResult("No students available");
                 }
             }
+        }
+    }
+
+    // 处理编辑成绩的事件的内部类
+    public class EditScoreListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String studentId = JOptionPane.showInputDialog(randomRollCallView, "输入学生学号:");
+
+            if(studentId != null ) {
+                try {
+                    // 获取学生列表
+                    List<Student> students = studentManager.getStudents();
+                    Student foundStudent = studentManager.checkStudentByID(studentId);
+                    // 如果没有找到学生，提示用户
+                    if (foundStudent == null) {
+                        JOptionPane.showMessageDialog(randomRollCallView, "没有找到该学号的学生，请检查后重试");
+                        return;
+                    }
+
+                    // 获取新输入的成绩
+                    String newScoreStr = JOptionPane.showInputDialog(randomRollCallView, "来吧他有多少分呢");
+                    if (newScoreStr != null && !newScoreStr.trim().isEmpty()) {
+                        try {
+                            // 成绩为数字，有效
+                            if (isValidScore(newScoreStr)) {
+                                foundStudent.setScore(newScoreStr); // 直接设置成绩
+                                JOptionPane.showMessageDialog(randomRollCallView, "对的，是这样，成绩更新完成");
+                                studentManager.saveStudents(); // 及时保存修改
+                            } else {
+                                JOptionPane.showMessageDialog(randomRollCallView, "成绩输入无效，请输入有效的成绩");
+                            }
+                        } catch (Exception ex) { // 捕获其他可能的异常
+                            JOptionPane.showMessageDialog(randomRollCallView, "更新成绩时发生错误，请重试");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(randomRollCallView, "成绩输入不能为空，请输入有效的成绩");
+                    }
+                } catch (HeadlessException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
+    }
+
+    // 处理查询学生成绩的事件的内部类
+    public class CheckStudentScoreListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            List<Student> students = studentManager.getStudents();
+            StringBuilder messageBuilder = new StringBuilder("Students and their scores:\n");
+
+            for(int i = 1; i <= students.size(); i++) {
+                Student student = students.get(i-1);
+                messageBuilder.append(i).append(": ").append(student.getName())
+                        .append(" (ID: ").append(student.getStudentId())
+                        .append("): ").append(student.getScore()).append("\n");
+            }
+
+            JTextArea textArea = new JTextArea(messageBuilder.toString());
+            textArea.setEditable(false);
+            JScrollPane ScoreScrollPane = new JScrollPane(textArea);
+            ScoreScrollPane.setPreferredSize(new Dimension(400, 300)); // 设置滚动窗口大小
+
+            JOptionPane.showMessageDialog(randomRollCallView, ScoreScrollPane, "Student Scores", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+
+
+    // 检查成绩是否为有效数字
+    private boolean isValidScore(String score) {
+        if (score == null || score.trim().isEmpty()) {
+            return false; // 空输入无效
+        }
+        try {
+            Double.parseDouble(score); // 使用包装类，转换为数字
+            return true;
+        } catch (NumberFormatException e) {
+            return false; // 捕获格式错误
         }
     }
 }
