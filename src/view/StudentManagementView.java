@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudentManagementView extends JFrame {
@@ -23,7 +24,7 @@ public class StudentManagementView extends JFrame {
     private JButton backMainButton;     // 返回主菜单按钮
     private JTextArea displayArea;        // 文本区域
 
-    private StudentManager studentManager; // 学生管理器实例
+    private StudentManager studentManager;
 
     // 构造方法
     public StudentManagementView() {
@@ -101,7 +102,6 @@ public class StudentManagementView extends JFrame {
             }
         });
 
-
         // 帮助菜单的事件监听器
         helpItem.addActionListener(new ActionListener() {
             @Override
@@ -143,13 +143,6 @@ public class StudentManagementView extends JFrame {
         studentIdField = new JTextField();
         panel.add(studentIdField);
 
-        /*
-        // 学生成绩 标签
-        panel.add(new JLabel("Student Score:"));
-        studentScoreFiled = new JTextField();
-        panel.add(studentScoreFiled);
-        */
-
         // 添加学生按钮
         addButton = new JButton("Add Student");
         panel.add(addButton);
@@ -181,37 +174,23 @@ public class StudentManagementView extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
     }
 
-
-    // 从指定文件加载学生信息
     private void loadStudentsFromFile(File file) {
-        // 输出流
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
 
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load students from file.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "学生信息已成功读取！", "成功", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "读取学生信息失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // 保存当前学生信息到指定文件
     private void saveStudentsToFile(File file) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
 
-            JOptionPane.showMessageDialog(this, "Students saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "学生信息已成功保存！", "成功", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to save students to file.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "保存学生信息失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    // 显示学生信息
-    public void displayStudents(List<Student> students) {
-        StringBuilder sb = new StringBuilder();   // 建立结构字符串存学生信息
-    }
-
-
 
     // 返回对应的按钮，以便其他类可以访问这些按钮。
     public JButton getAddButton() {
@@ -252,5 +231,4 @@ public class StudentManagementView extends JFrame {
         return studentIdField.getText();
     }
 
-    //public String getStudentScore(){ return studentScoreFiled.getText(); }
 }

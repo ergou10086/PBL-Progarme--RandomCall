@@ -157,8 +157,5 @@ public class RandomRollCallView extends JFrame {
     public JButton getCheckStudentScoreButton() {
         return checkStudentScoreButton;
     }
-
-    public void setCheckStudentScoreButton(JButton checkStudentScoreButton) {
-        this.checkStudentScoreButton = checkStudentScoreButton;
-    }
 }
+
