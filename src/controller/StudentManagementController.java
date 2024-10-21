@@ -24,7 +24,6 @@ public class StudentManagementController {
         this.studentManagementView.getRemoveButton().addActionListener(new RemoveStudentListener());
         // 更新学生按钮的事件监听器
         this.studentManagementView.getEditButton().addActionListener(new UpdateStudentListener());
-
         // 更新显示内容
         updateDisplay();
     }

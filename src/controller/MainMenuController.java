@@ -15,7 +15,6 @@ public class MainMenuController {
 
     // 构造函数，接收主菜单视图
     public MainMenuController(MainMenuView mainMenuView) {
-        // 实例化
         this.mainMenuView = mainMenuView;
         // 为随机点名按钮添加监听器
         this.mainMenuView.getRandomRollCallButton().addActionListener(new RandomRollCallListener());

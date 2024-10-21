@@ -2,7 +2,3 @@ ErgouTree:zjm10086
 LiLiang:123456789
 asddjv:zjm10086
 admin:123456
-<<<<<<< HEAD
-=======
-Liliang:123456
->>>>>>> 62e8d20de764bcbff0c65bae5dc96e5518c440ed

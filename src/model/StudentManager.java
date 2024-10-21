@@ -3,7 +3,7 @@ package model;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 // 学生列表管理类，维护学生数据
 public class StudentManager {
@@ -75,13 +75,11 @@ public class StudentManager {
         }
     }
 
-
     // 增
     public void addStudent(Student student) {
         students.add(student);
         saveStudents();
     }
-
 
     // 更好的删除，根据索引，从1开始
     public void removeStudentAtIndex(int index) {
@@ -124,18 +122,6 @@ public class StudentManager {
         }
 
         // 如果没有找到学生，返回 null
-        return foundStudent;
-    }
-    // 万能查
-    public Student checkStudent(String studentInformation) {
-        Student foundStudent = null;
-
-        for(Student student : students) {
-            if(student.getName().equals(studentInformation) || student.getStudentId().equals(studentInformation)) {
-                foundStudent = student;
-                break;
-            }
-        }
         return foundStudent;
     }
 
@@ -195,4 +181,3 @@ public class StudentManager {
         saveStudents();
     }
 }
-

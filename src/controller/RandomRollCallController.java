@@ -47,120 +47,6 @@ public class RandomRollCallController {
     public class StartRollCallListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // 获取选择的小组或学生
-            boolean isGroupSelected = randomRollCallView.isGroupSelected();
-            boolean isStudentSelected = randomRollCallView.isStudentSelected();
-
-            // 获取根据点名范围过滤的学生列表
-            String[] selectedClass = randomRollCallView.getSelectedClass();
-            if (selectedClass.length == 0) {
-                JOptionPane.showMessageDialog(randomRollCallView, "至少要选一个班级吧");
-                return;
-            }
-
-            // 从学生管理器类获取过滤后的学生列表
-            List<Student> selectedStudents = getFilteredStudents(selectedClass);
-
-            // 实例化随机数生成器
-            Random random = new Random();
-
-            if (isGroupSelected) {
-                // 小组随机
-                handleGroupSelection(random, selectedStudents);
-            } else if (isStudentSelected) {
-                // 学生随机
-                handleStudentSelection(random, selectedStudents);
-            }
-        }
-
-        // 根据筛选范围过滤得到点名范围的学生列表
-        private List<Student> getFilteredStudents(String[] selectedClass) {
-            List<Student> students = studentManager.getStudents();
-            List<Student> selectedStudents = new ArrayList<>();
-
-            // 选择了全局选项则全部添加
-            if (selectedClass[0].equals("全局选项")) {
-                selectedStudents.addAll(students);
-            } else {
-                for (Student student : students) {
-                    for (String className : selectedClass) {
-                        if (student.getClassName().equals(className)) {
-                            selectedStudents.add(student);
-                        }
-                    }
-                }
-            }
-            return selectedStudents;
-        }
-
-        // 随机小组
-        private void handleGroupSelection(Random random, List<Student> selectedStudents) {
-            // 得到过滤后的小组点名范围
-            List<String> groups = getUniqueGroups(selectedStudents);
-
-            if (!groups.isEmpty()) {
-                String selectedGroup = groups.get(random.nextInt(groups.size()));
-                List<Student> groupStudents = studentManager.getByStudentsInGroup(selectedGroup);
-                displayGroupStudents(selectedGroup, groupStudents);
-            } else {
-                randomRollCallView.appendResult("没有小组可选");
-            }
-        }
-
-        // 从筛选的范围内过滤小组
-        private List<String> getUniqueGroups(List<Student> selectedStudents) {
-            List<String> groups = new ArrayList<>();
-            for (Student s : selectedStudents) {
-                String group = s.getGroup();
-                if (!groups.contains(group)) {
-                    groups.add(group);
-                }
-            }
-            return groups;
-        }
-
-        // 在结果文本框中把小组的点名结果添加
-        private void displayGroupStudents(String selectedGroup, List<Student> groupStudents) {
-            if (!groupStudents.isEmpty()) {
-                // 点名结果输出的构造字符串
-                StringBuilder messageBuilder = new StringBuilder();
-                messageBuilder.append("Selected Group: ").append(selectedGroup).append("\n");
-                // 提示栏输出的构造字符串
-                StringBuilder messageBuilderForJO = new StringBuilder();
-                messageBuilderForJO.append("Group: ").append(selectedGroup).append("\n");
-
-                // 遍历小组内的学生，最多显示两个人
-                for (int i = 0; i < 2 && i < groupStudents.size(); i++) {
-                    Student student = groupStudents.get(i);
-                    messageBuilder.append("Student: ").append(student.getClassName()).append(":").append(student.getName()).append(" (ID: ").append(student.getStudentId()).append(")\n");
-                    messageBuilderForJO.append("Student: ").append(student.getClassName()).append(",").append(student.getName()).append("\n");
-                }
-
-                randomRollCallView.appendResult(messageBuilder.toString());
-                JOptionPane.showMessageDialog(randomRollCallView, messageBuilderForJO);
-            } else {
-                randomRollCallView.appendResult("No students in group: " + selectedGroup);
-            }
-        }
-
-        // 在结果文本框中把学生的点名结果添加
-        private void handleStudentSelection(Random random, List<Student> selectedStudents) {
-            if (!selectedStudents.isEmpty()) {
-                // 在被筛选后的学生列表中开始随机，取出学生，构建消息字符串
-                Student selectedStudent = selectedStudents.get(random.nextInt(selectedStudents.size()));
-                String result = "Selected Student: " + selectedStudent.getClassName() + ", " + selectedStudent.getName() + " (" + selectedStudent.getStudentId() + ")";
-                randomRollCallView.appendResult(result);
-                JOptionPane.showMessageDialog(randomRollCallView, "Result：" + selectedStudent.getClassName() + ", " + selectedStudent.getName());
-            } else {
-                randomRollCallView.appendResult("No students available");
-            }
-        }
-    }
-
-    /*
-    public class StartRollCallListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
 
             // 获取选择的是小组随机还是学生随机
             boolean isGroupSelected = randomRollCallView.isGroupSelected();
@@ -181,7 +67,7 @@ public class RandomRollCallController {
             // 选择了全局选项则全部添加
             if(selectedClass[0].equals("全局选项")){
                 selectedStudents.addAll(students);
-                // 要不然根据选中的班级过滤学生
+            // 要不然根据选中的班级过滤学生
             }else {
                 for (Student student : students) {
                     for (String className : selectedClass) {
@@ -252,22 +138,21 @@ public class RandomRollCallController {
             }
         }
     }
-     */
 
     // 处理编辑成绩的事件的内部类
     public class EditScoreListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String studentMessage = JOptionPane.showInputDialog(randomRollCallView, "输入学生学号或学生姓名:");
+            String studentId = JOptionPane.showInputDialog(randomRollCallView, "输入学生学号:");
 
-            if(studentMessage != null) {
+            if(studentId != null ) {
                 try {
                     // 获取学生列表
                     List<Student> students = studentManager.getStudents();
-                    Student foundStudent = studentManager.checkStudent(studentMessage);
+                    Student foundStudent = studentManager.checkStudentByID(studentId);
                     // 如果没有找到学生，提示用户
                     if (foundStudent == null) {
-                        JOptionPane.showMessageDialog(randomRollCallView, "没有找到该学生，请检查后重试");
+                        JOptionPane.showMessageDialog(randomRollCallView, "没有找到该学号的学生，请检查后重试");
                         return;
                     }
 
@@ -300,22 +185,24 @@ public class RandomRollCallController {
     public class CheckStudentScoreListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // 列表传入，读取学生列表
+            // 读取学生列表，并构建字符串
             List<Student> students = studentManager.getStudents();
-            // 构建字符串
-            StringBuilder messageBuilder = new StringBuilder("学生们的成绩如下\n");
+            StringBuilder messageBuilder = new StringBuilder("学生们的成绩如下：\n");
 
             for(int i = 1; i <= students.size(); i++) {
                 Student student = students.get(i-1);
-                messageBuilder.append(i).append(": ").append(student.getName()).append(" (ID: ").append(student.getStudentId()).append("): ").append(student.getScore()).append("\n");
+                messageBuilder.append(i).append(": ").append(student.getName())
+                        .append(" (ID: ").append(student.getStudentId())
+                        .append("): ").append(student.getScore()).append("\n");
             }
 
-            JTextArea textArea = new JTextArea(messageBuilder.toString());
-            textArea.setEditable(false);
+
+            JTextArea textArea = new JTextArea(messageBuilder.toString());       // 创建显示遍历学生们成绩的文本框
+            textArea.setEditable(false);      // 只读
             JScrollPane ScoreScrollPane = new JScrollPane(textArea);
             ScoreScrollPane.setPreferredSize(new Dimension(400, 300)); // 设置滚动窗口大小
-
-            JOptionPane.showMessageDialog(randomRollCallView, ScoreScrollPane, "学生成绩名单", JOptionPane.INFORMATION_MESSAGE);
+            // 能显示学生成绩的文本框
+            JOptionPane.showMessageDialog(randomRollCallView, ScoreScrollPane, "Student Scores", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -334,5 +221,4 @@ public class RandomRollCallController {
         }
     }
 }
-
 
