@@ -401,7 +401,7 @@ public class RandomRollCallController {
             }
         }
     }
-    
+
     // 检查成绩是否为有效数字
     private boolean isValidScore(String score) {
         if (score == null || score.trim().isEmpty()) {

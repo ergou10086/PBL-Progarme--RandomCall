@@ -26,6 +26,9 @@ public class StudentManagementView extends JFrame {
 
     private StudentManager studentManager;
 
+    private JMenuItem readItem;
+    private JMenuItem exportItem;
+
     // 构造方法
     public StudentManagementView() {
         setTitle("Student Management");        // 窗口标题
@@ -38,8 +41,8 @@ public class StudentManagementView extends JFrame {
 
         // 创建文件菜单
         JMenu fileMenu = new JMenu("文件");
-        JMenuItem readItem = new JMenuItem("读取点名册");
-        JMenuItem exportItem = new JMenuItem("导出点名册");
+        readItem = new JMenuItem("读取点名册");
+        exportItem = new JMenuItem("导出点名册");
         fileMenu.add(readItem);
         fileMenu.add(exportItem);
 
@@ -75,6 +78,7 @@ public class StudentManagementView extends JFrame {
         menuBar.add(helpMenu);
 
 
+        /*
         // 为读取和导出选项添加事件监听
         readItem.addActionListener(new ActionListener() {
             @Override
@@ -101,6 +105,7 @@ public class StudentManagementView extends JFrame {
                 System.out.println("保存学生信息的逻辑未实现");
             }
         });
+         */
 
         // 帮助菜单的事件监听器
         helpItem.addActionListener(new ActionListener() {
@@ -231,4 +236,15 @@ public class StudentManagementView extends JFrame {
         return studentIdField.getText();
     }
 
+    // 保存和读取菜单的get
+    public JMenuItem getReadItem() {
+        return readItem;
+    }
+
+    // 获取导出点名册菜单项的方法
+    public JMenuItem getExportItem() {
+        return exportItem;
+    }
 }
+
+
