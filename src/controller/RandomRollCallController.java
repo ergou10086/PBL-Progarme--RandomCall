@@ -1,5 +1,6 @@
 package controller;
 
+import exceptions.RandomExceptions;
 import model.Student;
 import model.StudentManager;
 import view.RandomRollCallView;
@@ -54,8 +55,12 @@ public class RandomRollCallController {
             // 获取根据点名范围过滤的学生列表
             String[] selectedClass = randomRollCallView.getSelectedClass();
             if (selectedClass.length == 0) {
-                JOptionPane.showMessageDialog(randomRollCallView, "至少要选一个班级吧");
-                return;
+                try {
+                    throw new RandomExceptions("至少要选一个班级吧");
+                } catch (RandomExceptions ex) {
+                    JOptionPane.showMessageDialog(randomRollCallView, ex.getMessage());
+                    return;
+                }
             }
 
             // 从学生管理器类获取过滤后的学生列表
@@ -267,8 +272,11 @@ public class RandomRollCallController {
                     Student foundStudent = studentManager.checkStudent(studentMessage);
                     // 如果没有找到学生，提示用户
                     if (foundStudent == null) {
-                        JOptionPane.showMessageDialog(randomRollCallView, "没有找到该学生，请检查后重试");
-                        return;
+                        try {
+                            throw new RandomExceptions.NotFindExceptions("没有找到该学生，请检查后重试");
+                        } catch (RandomExceptions.NotFindExceptions ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
 
                     // 获取新输入的成绩
@@ -281,13 +289,25 @@ public class RandomRollCallController {
                                 JOptionPane.showMessageDialog(randomRollCallView, "对的，是这样，成绩更新完成");
                                 studentManager.saveStudents(); // 及时保存修改
                             } else {
-                                JOptionPane.showMessageDialog(randomRollCallView, "成绩输入无效，请输入有效的成绩");
+                                try {
+                                    throw new RandomExceptions.ErrorScoreExceptions("成绩输入无效，请输入有效的成绩");
+                                } catch (RandomExceptions.ErrorScoreExceptions ex) {
+                                    JOptionPane.showMessageDialog(randomRollCallView, ex.getMessage());
+                                }
                             }
                         } catch (Exception ex) { // 捕获其他可能的异常
-                            JOptionPane.showMessageDialog(randomRollCallView, "更新成绩时发生错误，请重试");
+                            try {
+                                throw new RandomExceptions.UpdateScoreExceptions("更新成绩时发生错误，请重试");
+                            } catch (RandomExceptions.UpdateScoreExceptions ex2) {
+                                JOptionPane.showMessageDialog(randomRollCallView, ex2.getMessage());
+                            }
                         }
                     } else {
-                        JOptionPane.showMessageDialog(randomRollCallView, "成绩输入不能为空，请输入有效的成绩");
+                        try {
+                            throw new RandomExceptions.ErrorScoreExceptions("成绩输入不能为空，请输入有效的成绩");
+                        } catch (RandomExceptions.ErrorScoreExceptions ex) {
+                            JOptionPane.showMessageDialog(randomRollCallView, ex.getMessage());
+                        }
                     }
                 } catch (HeadlessException ex) {
                     throw new RuntimeException(ex);

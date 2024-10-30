@@ -1,5 +1,6 @@
 package controller;
 
+import exceptions.StudentManageExceptions;
 import model.Student;
 import model.StudentManager;
 import view.StudentManagementView;
@@ -74,9 +75,10 @@ public class StudentManagementController {
                 studentManager.removeStudentAtIndex(index);
                 // 更新显示
                 updateDisplay();
-            } catch (NumberFormatException ex) {
+            } catch (StudentManageExceptions.InvalidNumberOfStudentException ex) {
                 // 输入不是有效数字时，弹出提示框提示用户
                 JOptionPane.showMessageDialog(studentManagementView, "你好好看看你输入了个什么玩意", "瞬间爆炸", JOptionPane.ERROR_MESSAGE);
+                throw new StudentManageExceptions.InvalidNumberOfStudentException(ex.getMessage(), ex);
             } catch (IndexOutOfBoundsException ex) {
                 // 输入的索引超出范围时，提示用户
                 JOptionPane.showMessageDialog(studentManagementView, "我这里有这么号个人？", "瞬间爆炸", JOptionPane.ERROR_MESSAGE);

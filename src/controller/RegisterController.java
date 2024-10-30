@@ -6,19 +6,23 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.HashMap;
+import java.util.*;
+
+import exceptions.RegisterExceptions.*;
 
 // 注册控制器类
 public class RegisterController {
-    private RegisterView registerView; // 注册视图对象
+    private final RegisterView registerView; // 注册视图对象
     private HashMap<String, String> EuserDatabase; // 用户数据库，按键值对对存用户名和密码
 
     // 构造函数，初始化注册视图和用户数据库
     public RegisterController(RegisterView registerView) {
         this.registerView = registerView; // 注册视图
+        this.EuserDatabase = EuserDatabase;  // 用户数据库
         this.registerView.getRegisterButton().addActionListener(new RegisterListener()); // 为注册按钮添加监听器
         loadUserDatabase(); // 加载用户数据库
     }
+
 
     // 加载用户数据库的方法
     private void loadUserDatabase() {
@@ -37,6 +41,7 @@ public class RegisterController {
         }
     }
 
+
     // 保存用户数据库的方法
     private void saveUserDatabase() {
         // 使用BufferedWriter写入注册用户文件的信息到users.txt内
@@ -51,6 +56,7 @@ public class RegisterController {
         }
     }
 
+
     // 内部类，处理注册按钮的点击事件
     class RegisterListener implements ActionListener {
         @Override
@@ -61,11 +67,33 @@ public class RegisterController {
             String confirmPassword = registerView.getConfirmPassword();
 
             // 检查用户名和密码输入的有效性
-            if (!username.isEmpty() && !password.isEmpty() && password.equals(confirmPassword)) {
+            if (!username.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
                 // 检查用户名是否已存在
                 if (EuserDatabase.containsKey(username)) {
-                    JOptionPane.showMessageDialog(registerView, "用户名已存在！"); // 弹出对话框提示
-                } else {
+                    try {
+                        throw new UsernameAlreadyExistsException("用户名已存在!");
+                    } catch (UsernameAlreadyExistsException ex) {
+                        throw new RuntimeException(ex);
+                    }finally {
+                        JOptionPane.showMessageDialog(registerView, "用户名已存在！"); // 弹出对话框提示
+                    }
+                }else if(password.length() < 6 || password.length() > 16) {
+                    try {
+                        throw new InvalidPasswordException("密码长度必须至少为6个字符!并且小于16个字符");
+                    } catch (InvalidPasswordException ex) {
+                        throw new RuntimeException(ex);
+                    } finally {
+                        JOptionPane.showMessageDialog(registerView, "密码过长过短！");  // 弹出对话框提示
+                    }
+                }else if(!confirmPassword.equals(password)){
+                    try {
+                        throw new ConfirmErrorPasswordException("确认密码和密码输入不一致");
+                    }catch (ConfirmErrorPasswordException ex) {
+                        throw new RuntimeException(ex);
+                    }finally {
+                        JOptionPane.showMessageDialog(registerView, "两次密码输入不一致！");  // 弹出对话框提示
+                    }
+                }else{
                     EuserDatabase.put(username, password); // 将新用户添加到数据库
                     saveUserDatabase(); // 保存用户数据库
                     JOptionPane.showMessageDialog(registerView, "注册成功！"); // 弹出成功提示

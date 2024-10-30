@@ -11,6 +11,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import exceptions.LoginExceptions;
+
 // 处理登录逻辑的类
 public class LoginController {
 
@@ -50,11 +52,15 @@ public class LoginController {
 
 
     // 登录逻辑实现，包括自动登录和正常登录
-    private void login(String username, String password) {
+    private void login(String username, String password) throws LoginExceptions{
         // 检查用户输入是否为空
         if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(loginView, "用户名和密码不能为空!");
-            return;
+            try {
+                throw new LoginExceptions("用户名和密码不能为空!");
+            }finally {
+                JOptionPane.showMessageDialog(loginView, "用户名和密码不能为空!");
+                return;
+            }
         }
 
         if (isValidUser(username, password)) {
@@ -73,6 +79,7 @@ public class LoginController {
             loginView.setVisible(false);
         } else {   //错误提示
             JOptionPane.showMessageDialog(loginView, "Invalid username or password!");
+            throw new LoginExceptions("无效的用户名或密码!");
         }
     }
 
@@ -91,7 +98,12 @@ public class LoginController {
             String username = loginView.getUsername();
             String password = loginView.getPassword();
 
-            login(username, password);
+            try {
+                login(username, password);
+            } catch (LoginExceptions ex) {
+                JOptionPane.showMessageDialog(loginView, ex.getMessage());
+                throw new RuntimeException(ex);
+            }
         }
 
     }
@@ -100,7 +112,12 @@ public class LoginController {
     public void autoLogin() {
         String defaultUsername = "admin";   // 默认用户名
         String defaultPassword = "123456";  // 默认密码
-        login(defaultUsername, defaultPassword); // 使用相同的登录方法
+        try {
+            login(defaultUsername, defaultPassword); // 使用相同的登录方法
+        } catch (LoginExceptions e) {
+            JOptionPane.showMessageDialog(loginView, e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
 
