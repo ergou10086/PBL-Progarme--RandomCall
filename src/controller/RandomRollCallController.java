@@ -318,29 +318,90 @@ public class RandomRollCallController {
 
     // 处理查询学生成绩的事件的内部类
     public class CheckStudentScoreListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             // 列表传入，读取学生列表
             List<Student> students = studentManager.getStudents();
-            // 构建字符串
-            StringBuilder messageBuilder = new StringBuilder("学生们的成绩如下\n");
 
-            for(int i = 1; i <= students.size(); i++) {
-                Student student = students.get(i-1);
-                messageBuilder.append(i).append(": ").append(student.getName()).append(" (ID: ").append(student.getStudentId()).append("): ").append(student.getScore()).append("\n");
-            }
+            // 进行学生成绩信息的分组处理
+            ScoreGroupingHandler groupingHandler = new ScoreGroupingHandler();
+            Map<String, Map<String, List<Student>>> classGroupMap = groupingHandler.groupStudentsByClassAndGroup(students);
+
+            // 构建并展示包含按照班级和小组的成绩信息的字符串
+            ScoreDisplayBuilder displayBuilder = new ScoreDisplayBuilder();
+            StringBuilder messageBuilder = displayBuilder.buildScoreDisplayMessage(classGroupMap);
 
             JTextArea textArea = new JTextArea(messageBuilder.toString());
             textArea.setEditable(false);
             JScrollPane ScoreScrollPane = new JScrollPane(textArea);
-            ScoreScrollPane.setPreferredSize(new Dimension(400, 300)); // 设置滚动窗口大小
+            ScoreScrollPane.setPreferredSize(new Dimension(500, 500)); // 设置滚动窗口大小
 
             JOptionPane.showMessageDialog(randomRollCallView, ScoreScrollPane, "学生成绩名单", JOptionPane.INFORMATION_MESSAGE);
         }
+
+        // 负责将学生按照班级和小组进行分组的类
+        private static class ScoreGroupingHandler {
+            public Map<String, Map<String, List<Student>>> groupStudentsByClassAndGroup(List<Student> students) {
+                // 用于存储按照班级和小组分组后的成绩信息
+                // 外层Map的键是班级名称，值是内层Map；内层Map的键是小组名称，值是该小组的学生列表。
+                Map<String, Map<String, List<Student>>> classGroupMap = new HashMap<>();
+
+                // 遍历学生列表，按照班级和小组进行分组
+                for (Student student : students) {
+                    String className = student.getClassName();
+                    String groupName = student.getGroup();
+
+                    // 新班级开辟
+                    if (!classGroupMap.containsKey(className)) {
+                        classGroupMap.put(className, new HashMap<>());
+                    }
+
+                    Map<String, List<Student>> groupMap = classGroupMap.get(className);
+
+                    // 新小组开辟
+                    if (!groupMap.containsKey(groupName)) {
+                        groupMap.put(groupName, new ArrayList<>());
+                    }
+
+                    groupMap.get(groupName).add(student);
+                }
+
+                return classGroupMap;
+            }
+        }
+
+        // 负责构建成绩显示字符串的类
+        private static class ScoreDisplayBuilder {
+            public StringBuilder buildScoreDisplayMessage(Map<String, Map<String, List<Student>>> classGroupMap) {
+                // 构建包含按照班级和小组的成绩信息的字符串
+                StringBuilder messageBuilder = new StringBuilder("学生们的成绩如下:\n").append("\n");
+
+                // 遍历班级和小组的映射，构建成绩显示字符串。Entry一次获得键和值
+                for (Map.Entry<String, Map<String, List<Student>>> classEntry : classGroupMap.entrySet()) {
+                    String className = classEntry.getKey();
+                    messageBuilder.append("班级: ").append(className).append("\n");
+
+                    // 遍历出小组的Map
+                    Map<String, List<Student>> groupMap = classEntry.getValue();
+                    for (Map.Entry<String, List<Student>> groupEntry : groupMap.entrySet()) {
+                        String groupName = groupEntry.getKey();
+                        List<Student> groupStudents = groupEntry.getValue();
+
+                        messageBuilder.append("    小组: ").append(groupName).append("\n");
+                        // 从小组中遍历出学生，拼接
+                        for (Student student : groupStudents) {
+                            messageBuilder.append("        ").append(student.getName()).append(" (ID: ").append(student.getStudentId()).append("): ").append(student.getScore()).append("\n");
+                        }
+                    }
+                    messageBuilder.append("\n");
+                }
+
+                return messageBuilder;
+            }
+        }
     }
-
-
-
+    
     // 检查成绩是否为有效数字
     private boolean isValidScore(String score) {
         if (score == null || score.trim().isEmpty()) {
