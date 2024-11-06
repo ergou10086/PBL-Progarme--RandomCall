@@ -95,12 +95,14 @@ public class LoginView extends JFrame {
         gbc.gridy = 4; // 第五行
         loginButton = new JButton("Login");
         loginButton.setPreferredSize(new Dimension(80, 40)); // 设置登录按钮大小
+        loginButton.setBackground(Color.orange);
         backgroundPanel.add(loginButton, gbc);
 
         // 创建注册按钮
         gbc.gridx = 1; // 第二列
         registerButton = new JButton("Register");
         registerButton.setPreferredSize(new Dimension(80, 40)); // 设置注册按钮大小
+        registerButton.setBackground(Color.pink);
         backgroundPanel.add(registerButton, gbc);
 
         // 将背景面板添加到主面板

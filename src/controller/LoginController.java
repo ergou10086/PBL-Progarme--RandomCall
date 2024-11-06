@@ -40,7 +40,8 @@ public class LoginController {
         try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
             String line;    //按行读入
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(":");
+                String[] parts = line.split(":");   // 按分号分割
+                // 检测格式
                 if (parts.length == 2) {
                     userDatabase.put(parts[0], parts[1]); // 前用户名后密码
                 }

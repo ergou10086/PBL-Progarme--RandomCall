@@ -71,11 +71,11 @@ public class RegisterController {
                 // 检查用户名是否已存在
                 if (EuserDatabase.containsKey(username)) {
                     try {
-                        throw new UsernameAlreadyExistsException("用户名已存在!");
+                        throw new UsernameAlreadyExistsException("用户已存在!");
                     } catch (UsernameAlreadyExistsException ex) {
                         throw new RuntimeException(ex);
                     }finally {
-                        JOptionPane.showMessageDialog(registerView, "用户名已存在！"); // 弹出对话框提示
+                        JOptionPane.showMessageDialog(registerView, "用户名存在！"); // 弹出对话框提示
                     }
                 }else if(password.length() < 6 || password.length() > 16) {
                     try {
