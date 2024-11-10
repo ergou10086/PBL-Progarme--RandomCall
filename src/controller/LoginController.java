@@ -1,5 +1,7 @@
 package controller;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.*;
 import java.util.*;
 
@@ -12,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import exceptions.LoginExceptions;
+import exceptions.OIFileOrStreamEXception.*;
 
 // 处理登录逻辑的类
 public class LoginController {
@@ -47,7 +50,11 @@ public class LoginController {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                throw new ReadFileException("用户数据文件加载异常");
+            } catch (ReadFileException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -91,7 +98,13 @@ public class LoginController {
 
 
     // 内部类，处理登录按钮点击事件。
-    public class LoginListener implements ActionListener {
+    public class LoginListener implements ActionListener, KeyListener {
+        // 构造函数
+        public LoginListener() {
+            loginView.getUsernameField().addKeyListener(this);  // 添加键盘监听器
+            loginView.getPasswordField().addKeyListener(this);  // 也可以添加到密码框
+        }
+
         @Override
         // 登录按钮的事件监听器
         public void actionPerformed(ActionEvent e) {
@@ -107,6 +120,22 @@ public class LoginController {
             }
         }
 
+        @Override
+        public void keyPressed(KeyEvent e) {
+            // 检测用户按下了 "Enter" 键
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Enter Key Pressed"));
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            // 不需要实现此方法
+        }
+        @Override
+        public void keyTyped(KeyEvent e) {
+            // 不需要实现此方法
+        }
     }
 
     // 自动登录方法
@@ -135,6 +164,10 @@ public class LoginController {
             registerView.setVisible(true);
         }
     }
+
+
+    // 登录按钮的enter快捷键
+
 }
 
 

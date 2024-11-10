@@ -152,4 +152,12 @@ public class LoginView extends JFrame {
     public String getPassword() {
         return new String(passwordField.getPassword());
     }
+
+    public JTextField getUsernameField() {
+        return usernameField;
+    }
+
+    public JPasswordField getPasswordField() {
+        return passwordField;
+    }
 }
