@@ -7,10 +7,12 @@ import view.StudentManagementView;
 import view.RandomRollCallView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 // 学生管理控制器类，实现增删学生的逻辑
 public class StudentManagementController {
@@ -117,17 +119,33 @@ public class StudentManagementController {
     class AddStudentListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // 从文本框中获取学生信息
             String className = studentManagementView.getClassName();
             String name = studentManagementView.getName();
             String group = studentManagementView.getGroup();
             String studentId = studentManagementView.getStudentId();
+            
+            // 添加照片选择功能
+            String photoPath = null;
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                // 支持png和jpg格式
+                public boolean accept(File f) {
+                    return f.isDirectory() || f.getName().toLowerCase().endsWith(".jpg") 
+                        || f.getName().toLowerCase().endsWith(".png");
+                }
+                public String getDescription() {
+                    return "Image files (*.jpg, *.png)";
+                }
+            });
+            
+            int result = fileChooser.showOpenDialog(studentManagementView);
+            // 如果选择了文件，则获取文件路径，程序阻塞消失
+            if (result == JFileChooser.APPROVE_OPTION) {
+                photoPath = fileChooser.getSelectedFile().getAbsolutePath();
+            }
 
-            // 创建学生对象
-            Student student = new Student(className, name, group, studentId, "100");
-            // 添加到Student.dat
+            Student student = new Student(className, name, group, studentId, "100", photoPath);
             studentManager.addStudent(student);
-            // 更新显示
             updateDisplay();
         }
     }
@@ -177,16 +195,102 @@ public class StudentManagementController {
             String editInput = JOptionPane.showInputDialog(studentManagementView, "请输入你要更改的学生索引(1开):");
             try {
                 int index = Integer.parseInt(editInput);
-                index -= 1; // 转换为从0开始的索引
-                studentManager.editStudentAtIndex(index);
-                // 更新显示
-                updateDisplay();
-            } catch (StudentManageExceptions.InvalidNumberOfStudentException ex) {
-                JOptionPane.showMessageDialog(studentManagementView, "你好好看看你输入了个什么玩意", "瞬间爆炸", JOptionPane.ERROR_MESSAGE);
-                throw new StudentManageExceptions.InvalidNumberOfStudentException(ex.getMessage(), ex);
-            } catch (IndexOutOfBoundsException ex) {
-                JOptionPane.showMessageDialog(studentManagementView, "我这里有这么号个人？", "瞬间爆炸", JOptionPane.ERROR_MESSAGE);
+                index -= 1;
+                
+                List<Student> students = studentManager.getStudents();
+                if (index >= 0 && index < students.size()) {
+                    Student student = students.get(index);
+                    
+                    // 创建编辑对话框
+                    JDialog editDialog = new JDialog(studentManagementView, "编辑学生信息", true);
+                    editDialog.setLayout(new GridLayout(7, 2));
+                    
+                    // 创建输入字段
+                    JTextField classField = new JTextField(student.getClassName());
+                    JTextField nameField = new JTextField(student.getName());
+                    JTextField groupField = new JTextField(student.getGroup());
+                    JTextField idField = new JTextField(student.getStudentId());
+                    JTextField scoreField = new JTextField(student.getScore());
+                    JLabel photoLabel = new JLabel(student.getPhotoPath() != null ? student.getPhotoPath() : "无照片");
+                    
+                    // 添加照片选择按钮
+                    JButton selectPhotoButton = new JButton("选择照片");
+                    final String[] selectedPhotoPath = {student.getPhotoPath()};
+
+                    // 照片选择器的搭建
+                    selectPhotoButton.addActionListener(evt -> {
+                        JFileChooser fileChooser = new JFileChooser();
+                        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                            public boolean accept(File f) {
+                                return f.isDirectory() || f.getName().toLowerCase().endsWith(".jpg") 
+                                    || f.getName().toLowerCase().endsWith(".png");
+                            }
+                            public String getDescription() {
+                                return "Image files (*.jpg, *.png)";
+                            }
+                        });
+                        
+                        int result = fileChooser.showOpenDialog(editDialog);
+                        if (result == JFileChooser.APPROVE_OPTION) {
+                            selectedPhotoPath[0] = fileChooser.getSelectedFile().getAbsolutePath();
+                            photoLabel.setText(selectedPhotoPath[0]);
+                        }
+                    });
+                    
+                    // 添加确认按钮
+                    JButton confirmButton = new JButton("确认");
+                    confirmButton.addActionListener(evt -> {
+                        if (isValidScore(scoreField.getText())) {
+                            student.setClassName(classField.getText());
+                            student.setName(nameField.getText());
+                            student.setGroup(groupField.getText());
+                            student.setStudentId(idField.getText());
+                            student.setScore(scoreField.getText());
+                            student.setPhotoPath(selectedPhotoPath[0]);
+                            
+                            studentManager.saveStudents();
+                            updateDisplay();
+                            editDialog.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(editDialog, "请输入有效的成绩！");
+                        }
+                    });
+                    
+                    // 添加组件到对话框
+                    editDialog.add(new JLabel("班级:"));
+                    editDialog.add(classField);
+                    editDialog.add(new JLabel("姓名:"));
+                    editDialog.add(nameField);
+                    editDialog.add(new JLabel("小组:"));
+                    editDialog.add(groupField);
+                    editDialog.add(new JLabel("学号:"));
+                    editDialog.add(idField);
+                    editDialog.add(new JLabel("成绩:"));
+                    editDialog.add(scoreField);
+                    editDialog.add(new JLabel("照片:"));
+                    editDialog.add(photoLabel);
+                    editDialog.add(selectPhotoButton);
+                    editDialog.add(confirmButton);
+                    
+                    editDialog.pack();
+                    editDialog.setLocationRelativeTo(studentManagementView);
+                    editDialog.setVisible(true);
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(studentManagementView, "请输入有效的索引数字！");
             }
+        }
+    }
+
+    private boolean isValidScore(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return false;
+        }try {
+            Double.parseDouble(text);
+            return true;
+        }catch (NumberFormatException e) {
+            // 如果在转换过程中抛出NumberFormatException异常，说明字符串的格式不符合数字的格式要求
+            return false;
         }
     }
 

@@ -1,4 +1,5 @@
 package model;
+import javax.swing.*;
 import java.io.Serializable;
 
 // 学生实体类, 处理学生基本信息
@@ -10,22 +11,32 @@ public class Student implements Serializable{
     private String group;        // 小组
     private String studentId;    // 学号
     private String score;        // 成绩，默认初值100
+    private String photoPath;    // 学生照片路径
 
 
     // 构造方法
-    public Student(String className, String name, String group, String studentId, String score) {
+    public Student(String className, String name, String group, String studentId, String score, String photoPath) {
         this.className = className;
         this.name = name;
         this.group = group;
         this.studentId = studentId;
         this.score = score;
+        this.photoPath = photoPath;
     }
 
-    // 新增的构造方法，默认成绩为100
+    // 带参构造方法，默认成绩为100
     public Student(String className, String name, String group, String studentId) {
-        this(className, name, group, studentId, "100"); // 设置默认成绩为100
+        this(className, name, group, studentId, "100", null); // 设置默认成绩为100，默认照片路径为null
     }
 
+
+    // 获取学生图片对应的ImageIcon对象，用于在界面显示
+    public ImageIcon getStudentImageIcon() {
+        if (photoPath!= null &&!photoPath.isEmpty()) {
+            return new ImageIcon(photoPath);
+        }
+        return null; // 如果路径为空，返回null，表示没有可用图片
+    }
 
     //getter和setter
     public String getClassName() {
@@ -69,5 +80,13 @@ public class Student implements Serializable{
 
     public void setScore(String score) {
         this.score = score;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 }

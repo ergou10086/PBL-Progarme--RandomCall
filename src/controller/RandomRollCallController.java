@@ -86,6 +86,7 @@ public class RandomRollCallController {
             // 选择了全局选项则全部添加
             if (selectedClass[0].equals("全局选项")) {
                 selectedStudents.addAll(students);
+            // 否则根据范围来
             } else {
                 for (Student student : students) {
                     for (String className : selectedClass) {
@@ -134,15 +135,41 @@ public class RandomRollCallController {
                 StringBuilder messageBuilderForJO = new StringBuilder();
                 messageBuilderForJO.append("Group: ").append(selectedGroup).append("\n");
 
+                // 创建一个面板用于放置图片和文字信息，采用流式布局方便组件排列
+                JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
                 // 遍历小组内的学生，最多显示两个人
                 for (int i = 0; i < 2 && i < groupStudents.size(); i++) {
                     Student student = groupStudents.get(i);
                     messageBuilder.append("Student: ").append(student.getClassName()).append(":").append(student.getName()).append(" (ID: ").append(student.getStudentId()).append(")\n");
                     messageBuilderForJO.append("Student: ").append(student.getClassName()).append(",").append(student.getName()).append("\n");
+
+                    // 获取学生对应的图片（以ImageIcon形式）
+                    ImageIcon studentImageIcon = student.getStudentImageIcon();
+                    if (studentImageIcon!= null) {
+                        // 获取图片的原始宽度和高度
+                        int imageWidth = studentImageIcon.getIconWidth();
+                        int imageHeight = studentImageIcon.getIconHeight();
+                        // 判断图片尺寸是否超过设定的最大显示尺寸
+                        if (imageWidth > 600 || imageHeight > 850) {
+                            // 如果超过，按照比例缩放图片到最大显示尺寸（宽600高850）
+                            Image image = studentImageIcon.getImage();
+                            Image scaledImage = image.getScaledInstance(600, 850, Image.SCALE_SMOOTH);
+                            studentImageIcon = new ImageIcon(scaledImage);
+                        }
+                        // 创建一个JLabel用于显示图片，并根据处理后的图片尺寸设置大小
+                        JLabel imageLabel = new JLabel(studentImageIcon);
+                        imageLabel.setPreferredSize(new Dimension(studentImageIcon.getIconWidth(), studentImageIcon.getIconHeight()));
+                        panel.add(imageLabel);
+                    }
+                    // 同时添加学生信息的文本标签
+                    JLabel textLabel = new JLabel("Student: " + student.getClassName() + ":" + student.getName() + " (ID: " + student.getStudentId() + ")");
+                    panel.add(textLabel);
                 }
 
                 randomRollCallView.appendResult(messageBuilder.toString());
-                JOptionPane.showMessageDialog(randomRollCallView, messageBuilderForJO);
+                // 使用JOptionPane展示包含自定义面板（有图片和文字）的对话框
+                JOptionPane.showMessageDialog(randomRollCallView, panel);
             } else {
                 randomRollCallView.appendResult("No students in group: " + selectedGroup);
             }
@@ -155,11 +182,51 @@ public class RandomRollCallController {
                 Student selectedStudent = selectedStudents.get(random.nextInt(selectedStudents.size()));
                 String result = "Selected Student: " + selectedStudent.getClassName() + ", " + selectedStudent.getName() + " (" + selectedStudent.getStudentId() + ")";
                 randomRollCallView.appendResult(result);
+
+                // 获取学生对应的图片（以ImageIcon形式）
+                ImageIcon studentImageIcon = selectedStudent.getStudentImageIcon();
+                if (studentImageIcon!= null) {
+                    // 创建面板放置图片和文字信息
+                    JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                    // 获取图片的原始宽度和高度
+                    int imageWidth = studentImageIcon.getIconWidth();
+                    int imageHeight = studentImageIcon.getIconHeight();
+                    // 判断图片尺寸是否超过设定的最大显示尺寸
+                    if (imageWidth > 600 || imageHeight > 850) {
+                        // 如果超过，按照比例缩放图片到最大显示尺寸（宽600高850）
+                        Image image = studentImageIcon.getImage();
+                        Image scaledImage = image.getScaledInstance(600, 850, Image.SCALE_SMOOTH);
+                        studentImageIcon = new ImageIcon(scaledImage);
+                    }
+                    // 创建一个JLabel用于显示图片，并根据处理后的图片尺寸设置大小
+                    JLabel imageLabel = new JLabel(studentImageIcon);
+                    imageLabel.setPreferredSize(new Dimension(studentImageIcon.getIconWidth(), studentImageIcon.getIconHeight()));
+                    panel.add(imageLabel);
+                    // 添加学生信息文本标签
+                    JLabel textLabel = new JLabel("Student: " + selectedStudent.getClassName() + ", " + selectedStudent.getName() + " (" + selectedStudent.getStudentId() + ")");
+                    panel.add(textLabel);
+                    // 展示包含图片和文字的对话框
+                    JOptionPane.showMessageDialog(randomRollCallView, panel);
+                } else {
+                    JOptionPane.showMessageDialog(randomRollCallView, "Result：" + selectedStudent.getClassName() + ", " + selectedStudent.getName());
+                }
+            } else {
+                randomRollCallView.appendResult("No students available");
+            }
+        }
+        /*
+        private void handleStudentSelection(Random random, List<Student> selectedStudents) {
+            if (!selectedStudents.isEmpty()) {
+                // 在被筛选后的学生列表中开始随机，取出学生，构建消息字符串
+                Student selectedStudent = selectedStudents.get(random.nextInt(selectedStudents.size()));
+                String result = "Selected Student: " + selectedStudent.getClassName() + ", " + selectedStudent.getName() + " (" + selectedStudent.getStudentId() + ")";
+                randomRollCallView.appendResult(result);
                 JOptionPane.showMessageDialog(randomRollCallView, "Result：" + selectedStudent.getClassName() + ", " + selectedStudent.getName());
             } else {
                 randomRollCallView.appendResult("No students available");
             }
         }
+         */
     }
 
     /*
@@ -332,6 +399,7 @@ public class RandomRollCallController {
             ScoreDisplayBuilder displayBuilder = new ScoreDisplayBuilder();
             StringBuilder messageBuilder = displayBuilder.buildScoreDisplayMessage(classGroupMap);
 
+            // 设置一个新的文本区域，展示成绩
             JTextArea textArea = new JTextArea(messageBuilder.toString());
             textArea.setEditable(false);
             JScrollPane ScoreScrollPane = new JScrollPane(textArea);
