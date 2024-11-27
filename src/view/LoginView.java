@@ -20,24 +20,116 @@ public class LoginView extends JFrame {
     private int DarkIntoCount = 0;           // 暗道控件，记录独立暗道点击次数，四次直接进入
 
     public LoginView() {
-        setTitle("登录窗口");                                  // 窗口标题
-        setSize(590, 380);                      // 窗口大小
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);     // 关闭窗口
-        setLocationRelativeTo(null);                        // 窗口居中显示
+        setTitle("学生管理系统 - 登录");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
         // 加载背景图片
         try {
-            backgroundImage = ImageIO.read(new File("图片素材/1-gigapixel-scale-4x.jpg")); // 设置背景图片路径
+            backgroundImage = ImageIO.read(new File("图片素材/1-gigapixel-scale-4x.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // 创建主面板
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // 使用 BoxLayout 垂直排列
+        // 创建半透明的登录面板
+        JPanel loginPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                g.setColor(new Color(255, 255, 255, 200));
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        loginPanel.setLayout(new GridBagLayout());
+        loginPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+        loginPanel.setOpaque(false);
 
-        // 绘制背景的面板作为底面板
-        JPanel backgroundPanel = new JPanel() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        // 添加标题
+        JLabel titleLabel = new JLabel("欢迎登录", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 24));
+        titleLabel.setForeground(new Color(44, 62, 80));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        loginPanel.add(titleLabel, gbc);
+
+        // 用户名输入区域
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        JLabel usernameLabel = new JLabel("用户名:");
+        usernameLabel.setFont(new Font("微软雅黑", Font.BOLD, 14));
+        usernameLabel.setForeground(new Color(52, 73, 94));
+        loginPanel.add(usernameLabel, gbc);
+
+        gbc.gridx = 1;
+        usernameField = new JTextField(20);
+        usernameField.setPreferredSize(new Dimension(200, 30));
+        usernameField.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        loginPanel.add(usernameField, gbc);
+
+        // 密码输入区域
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JLabel passwordLabel = new JLabel("密码:");
+        passwordLabel.setFont(new Font("微软雅黑", Font.BOLD, 14));
+        passwordLabel.setForeground(new Color(52, 73, 94));
+        loginPanel.add(passwordLabel, gbc);
+
+        gbc.gridx = 1;
+        passwordField = new JPasswordField(20);
+        passwordField.setPreferredSize(new Dimension(200, 30));
+        loginPanel.add(passwordField, gbc);
+
+        // 选项区域
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        optionsPanel.setOpaque(false);
+
+        rememberMeButton = new JRadioButton("记住密码");
+        rememberMeButton.setFont(new Font("微软雅黑", Font.BOLD, 12));
+        rememberMeButton.setForeground(new Color(52, 73, 94));
+        rememberMeButton.setOpaque(false);
+        
+        nextNotLoginCheckBox = new JRadioButton("下次自动登录");
+        nextNotLoginCheckBox.setFont(new Font("微软雅黑", Font.BOLD, 12));
+        nextNotLoginCheckBox.setForeground(new Color(52, 73, 94));
+        nextNotLoginCheckBox.setOpaque(false);
+
+        optionsPanel.add(rememberMeButton);
+        optionsPanel.add(nextNotLoginCheckBox);
+        loginPanel.add(optionsPanel, gbc);
+
+        // 按钮区域
+        gbc.gridy = 4;
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        buttonPanel.setOpaque(false);
+
+        loginButton = new JButton("登录");
+        loginButton.setPreferredSize(new Dimension(100, 35));
+        loginButton.setFont(new Font("微软雅黑", Font.BOLD, 14));
+        loginButton.setBackground(new Color(70, 130, 180));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
+
+        registerButton = new JButton("注册");
+        registerButton.setPreferredSize(new Dimension(100, 35));
+        registerButton.setFont(new Font("微软雅黑", Font.BOLD, 14));
+        registerButton.setBackground(new Color(100, 180, 100));
+        registerButton.setForeground(Color.WHITE);
+        registerButton.setFocusPainted(false);
+
+        buttonPanel.add(loginButton);
+        buttonPanel.add(registerButton);
+        loginPanel.add(buttonPanel, gbc);
+
+        // 创建背景面板
+        JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -46,94 +138,26 @@ public class LoginView extends JFrame {
                 }
             }
         };
+        backgroundPanel.add(loginPanel);
 
-        backgroundPanel.setLayout(new GridBagLayout()); // 使用 GridBagLayout 控件布局
-
-        // 创建 GridBagConstraints 对象用于设置控件位置
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 4, 10, 4); // 控件之间的间距
-
-        // 添加用户名标签和输入框
-        gbc.gridx = 0; // 第一列
-        gbc.gridy = 0; // 第一行
-        JLabel usernameLabel = new JLabel("Username");
-        usernameLabel.setFont(new Font("Arial", Font.BOLD, 16)); // 设置字体和大小
-        backgroundPanel.add(usernameLabel, gbc);
-
-        gbc.gridx = 1; // 第二列
-        usernameField = new JTextField(17); // 输入框长度
-        usernameField.setPreferredSize(new Dimension(45, 20));   // 输入框大小
-        backgroundPanel.add(usernameField, gbc);
-
-        // 添加密码标签和输入框
-        gbc.gridx = 0; // 第一列
-        gbc.gridy = 1; // 第二行
-        JLabel passwordLabel = new JLabel("Password");
-        passwordLabel.setFont(new Font("Arial", Font.BOLD, 16)); // 设置字体和大小
-        backgroundPanel.add(passwordLabel, gbc);
-
-        gbc.gridx = 1; // 第二列
-        passwordField = new JPasswordField(17); // 密码输入框长度
-        passwordField.setPreferredSize(new Dimension(45, 20));  // 输入框大小
-        backgroundPanel.add(passwordField, gbc);
-
-        // 记住密码的单选框
-        gbc.gridx = 0; // 第一列
-        gbc.gridy = 2; // 第三行
-        rememberMeButton = new JRadioButton("Remember Me");
-        backgroundPanel.add(rememberMeButton, gbc);
-
-        // 创建下次不登录的复选框
-        gbc.gridx = 0; // 第一列
-        gbc.gridy = 3; // 第四行
-        nextNotLoginCheckBox = new JRadioButton("Next time don't login");
-        backgroundPanel.add(nextNotLoginCheckBox, gbc);
-
-        // 创建登录按钮
-        gbc.gridx = 0; // 第一列
-        gbc.gridy = 4; // 第五行
-        loginButton = new JButton("Login");
-        loginButton.setPreferredSize(new Dimension(80, 40)); // 设置登录按钮大小
-        loginButton.setBackground(Color.orange);
-        backgroundPanel.add(loginButton, gbc);
-
-        // 创建注册按钮
-        gbc.gridx = 1; // 第二列
-        registerButton = new JButton("Register");
-        registerButton.setPreferredSize(new Dimension(80, 40)); // 设置注册按钮大小
-        registerButton.setBackground(Color.pink);
-        backgroundPanel.add(registerButton, gbc);
-
-        // 将背景面板添加到主面板
-        mainPanel.add(backgroundPanel);
-
-        add(mainPanel);
-
-        // 为下次无需输入密码的添加监听器
-        nextNotLoginCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (nextNotLoginCheckBox.isSelected()) {
-                    // 弹出提示窗口
-                    JOptionPane.showMessageDialog(LoginView.this, "别，你要是懒了，我就不会写了", "你先别急", JOptionPane.INFORMATION_MESSAGE);
-                }
+        // 保持原有的事件监听器
+        nextNotLoginCheckBox.addActionListener(e -> {
+            if (nextNotLoginCheckBox.isSelected()) {
+                JOptionPane.showMessageDialog(LoginView.this, 
+                    "别，你要是懒了，我就不会写了", "你先别急", 
+                    JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
-        // 暗道的监听器
-        rememberMeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DarkIntoCount += 1;
-                // 四次后暗道开放
-                if (DarkIntoCount % 4 == 0) {
-                    // 传递当前视图，进行自动登录
-                    LoginController loginController = new LoginController(LoginView.this);
-                    loginController.autoLogin(); // 触发自动登录
-                }
+        rememberMeButton.addActionListener(e -> {
+            DarkIntoCount += 1;
+            if (DarkIntoCount % 4 == 0) {
+                LoginController loginController = new LoginController(LoginView.this);
+                loginController.autoLogin();
             }
         });
+
+        setContentPane(backgroundPanel);
     }
 
     // getter方法

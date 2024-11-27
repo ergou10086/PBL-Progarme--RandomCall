@@ -16,71 +16,115 @@ public class RandomRollCallView extends JFrame {
     private JButton editScoreButton;              // 调整学生成绩
     private JButton checkStudentScoreButton;      // 查询学生成绩按钮
     private JTextArea resultTextArea;             // 显示随机点名结果的多行文本域
+    private JButton exportButton;
 
     public RandomRollCallView() {
-        setTitle("Random Roll Call");       // 标题
-        setSize(400, 400);     // 增加大小
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);   // 只关闭本页面
-        setLocationRelativeTo(null);       // 居中
+        setTitle("随机点名系统");
+        setSize(500, 600);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        // 使用 BorderLayout 来允许多行文本域占据更多空间
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        // 主面板使用 BorderLayout
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // 创建一个面板用于存放控件
-        JPanel controlPanel = new JPanel(new GridLayout(4, 1)); // 4 行 1 列布局
+        // 创建顶部面板
+        JPanel topPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // 创建班级选择列表
-        DefaultListModel<String> classListModel = new DefaultListModel<>();     // 使用 可以动态添加的JList 允许多选
+        // 班级选择区域
+        JPanel classPanel = new JPanel(new BorderLayout());
+        classPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "班级选择"));
+        DefaultListModel<String> classListModel = new DefaultListModel<>();
         classList = new JList<>(classListModel);
-        JScrollPane classListScrollPane = new JScrollPane(classList);    // 创建滚动列表
-        controlPanel.add(new JLabel("Select Classes:"));    // 动态菜单添加标签
-        classListScrollPane.setPreferredSize(new Dimension(100, 50)); // 设置列表的首选大小
-        classListModel.addElement("全局选项");     // 添加“所有班级”选项
-        controlPanel.add(classListScrollPane);      // 班级选择列表添加到控件面板中
+        classList.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        JScrollPane classListScrollPane = new JScrollPane(classList);
+        classListScrollPane.setPreferredSize(new Dimension(150, 80));
+        classListModel.addElement("全局选项");
+        classPanel.add(classListScrollPane, BorderLayout.CENTER);
 
-        // 将两个 单选按钮 组装到一个 ButtonGroup 中，实现多选框单选，并添加到控制面板
-        groupRadioButton = new JRadioButton("Random Group");
-        studentRadioButton = new JRadioButton("Random Student");
-        ButtonGroup buttonGroup = new ButtonGroup();      // 按钮组
+        // 随机选择模式区域
+        JPanel modePanel = new JPanel();
+        modePanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "选择模式"));
+        groupRadioButton = new JRadioButton("随机小组");
+        studentRadioButton = new JRadioButton("随机学生");
+        groupRadioButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        studentRadioButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(groupRadioButton);
         buttonGroup.add(studentRadioButton);
-        controlPanel.add(groupRadioButton);
-        controlPanel.add(studentRadioButton);
+        modePanel.add(groupRadioButton);
+        modePanel.add(studentRadioButton);
 
-        // 添加开始按钮到控制面板
-        startButton = new JButton("Start");
-        controlPanel.add(startButton);
+        // 操作按钮区域
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        buttonPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "操作区"));
 
-        // 添加回到主菜单按钮
-        backMainButton = new JButton("Back to Main Menu");
-        controlPanel.add(backMainButton);
-        backMainButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        // 创建按钮
+        startButton = new JButton("开始点名");
+        editScoreButton = new JButton("编辑成绩");
+        checkStudentScoreButton = new JButton("查看成绩");
+        exportButton = new JButton("导出成绩单");
 
-        // 添加学生成绩管理按钮
-        editScoreButton = new JButton("Edit Score");
-        controlPanel.add(editScoreButton);
+        // 统一设置按钮样式
+        Font buttonFont = new Font("微软雅黑", Font.PLAIN, 14);
+        Dimension buttonSize = new Dimension(120, 35);
+        
+        for (JButton button : new JButton[]{startButton, editScoreButton, checkStudentScoreButton, exportButton}) {
+            button.setFont(buttonFont);
+            button.setPreferredSize(buttonSize);
+        }
 
-        // 添加查询学生成绩按钮
-        checkStudentScoreButton = new JButton("Check Student Score");
-        controlPanel.add(checkStudentScoreButton);
+        buttonPanel.add(startButton);
+        buttonPanel.add(editScoreButton);
+        buttonPanel.add(checkStudentScoreButton);
+        buttonPanel.add(exportButton);
 
-        // 将控制面板添加到主面板的北部
-        panel.add(controlPanel, BorderLayout.NORTH);
+        // 返回按钮
+        backMainButton = new JButton("返回主菜单");
+        backMainButton.setFont(buttonFont);
+        backMainButton.setPreferredSize(buttonSize);
+        backMainButton.addActionListener(e -> dispose());
 
-        // 创建多行文本域，设置为不可编辑，并将其添加到面板
-        resultTextArea = new JTextArea(); // 默认行列
-        resultTextArea.setEditable(false); // 设置为只读
-        JScrollPane scrollPane = new JScrollPane(resultTextArea); // 添加滚动条
-        panel.add(scrollPane, BorderLayout.CENTER); // 将滚动面板添加到主面板的中央
+        // 使用 GridBagLayout 添加组件
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        topPanel.add(classPanel, gbc);
 
-        // 将面板添加到 JFrame
-        add(panel);
+        gbc.gridy = 1;
+        topPanel.add(modePanel, gbc);
+
+        gbc.gridy = 2;
+        topPanel.add(buttonPanel, gbc);
+
+        gbc.gridy = 3;
+        topPanel.add(backMainButton, gbc);
+
+        // 结果显示区域
+        resultTextArea = new JTextArea();
+        resultTextArea.setEditable(false);
+        resultTextArea.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        resultTextArea.setMargin(new Insets(5, 5, 5, 5));
+        JScrollPane scrollPane = new JScrollPane(resultTextArea);
+        scrollPane.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "点名结果"));
+        scrollPane.setPreferredSize(new Dimension(400, 200)); // 调整显示区域的大小
+
+        // 添加到主面板
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+        setContentPane(mainPanel);
     }
 
 
@@ -156,6 +200,10 @@ public class RandomRollCallView extends JFrame {
 
     public JButton getCheckStudentScoreButton() {
         return checkStudentScoreButton;
+    }
+
+    public JButton getExportButton() {
+        return exportButton;
     }
 }
 

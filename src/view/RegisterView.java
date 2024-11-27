@@ -13,46 +13,70 @@ public class RegisterView extends JFrame {
     private JButton BackToMainButton;              // 回退到主页面按钮
 
     public RegisterView() {
-        setTitle("Register");          // 标题
-        setSize(400, 300); // 尺寸
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);   // 退出时关闭
-        setLocationRelativeTo(null);       // 居中
+        setTitle("学生管理系统 - 注册");
+        setSize(500, 400);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        // 建立了一个面板panel，四行两列
-        JPanel panel = new JPanel(new GridLayout(4, 2));
-        // 关于用户名的控件
-        panel.add(new JLabel("Username:"));
-        usernameField = new JTextField();
-        panel.add(usernameField);
+        // 创建主面板
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
-        // 关于密码的控件
-        panel.add(new JLabel("Password:"));
-        passwordField = new JPasswordField();
-        panel.add(passwordField);
+        // 创建标题
+        JLabel titleLabel = new JLabel("用户注册", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 24));
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
 
-        // 关于确认密码的控件
-        panel.add(new JLabel("Confirm Password:"));
-        confirmPasswordField = new JPasswordField();
-        panel.add(confirmPasswordField);
+        // 创建表单面板
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-        // 关于注册按钮的控件
-        registerButton = new JButton("Register");
-        panel.add(registerButton);
+        // 用户名输入
+        addFormField(formPanel, "用户名:", usernameField = new JTextField(), gbc, 0);
 
-        BackToMainButton = new JButton("Back to Main Menu");
-        panel.add(BackToMainButton);
-        BackToMainButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        // 密码输入
+        addFormField(formPanel, "密码:", passwordField = new JPasswordField(), gbc, 1);
 
+        // 确认密码
+        addFormField(formPanel, "确认密码:", confirmPasswordField = new JPasswordField(), gbc, 2);
 
-        add(panel);
+        mainPanel.add(formPanel, BorderLayout.CENTER);
+
+        // 按钮面板
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        
+        registerButton = new JButton("注册");
+        registerButton.setPreferredSize(new Dimension(100, 35));
+        registerButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        
+        BackToMainButton = new JButton("返回");
+        BackToMainButton.setPreferredSize(new Dimension(100, 35));
+        BackToMainButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        BackToMainButton.addActionListener(e -> dispose());
+
+        buttonPanel.add(registerButton);
+        buttonPanel.add(BackToMainButton);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        setContentPane(mainPanel);
     }
 
+    private void addFormField(JPanel panel, String labelText, JTextField field, 
+            GridBagConstraints gbc, int row) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        panel.add(label, gbc);
 
+        gbc.gridx = 1;
+        field.setPreferredSize(new Dimension(200, 30));
+        field.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        panel.add(field, gbc);
+    }
 
     // getter
     public JButton getRegisterButton() {

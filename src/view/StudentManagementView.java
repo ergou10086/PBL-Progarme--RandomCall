@@ -4,9 +4,9 @@ import model.Student;
 import model.StudentManager;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.*;
 
 import java.util.ArrayList;
@@ -31,30 +31,100 @@ public class StudentManagementView extends JFrame {
 
     // 构造方法
     public StudentManagementView() {
-        setTitle("Student Management");        // 窗口标题
-        setSize(400, 440);        // 窗口大小
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);   // 只关闭本页面退出
-        setLocationRelativeTo(null);            // 居中
+        setTitle("学生信息管理");
+        setSize(600, 500);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // 创建主面板
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // 创建菜单栏
-        JMenuBar menuBar = new JMenuBar();
+        setupMenuBar();
 
-        // 创建文件菜单
+        // 创建输入面板
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        inputPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "学生信息输入"));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // 添加输入字段
+        addInputField(inputPanel, "班级名称:", classNameField = new JTextField(), gbc, 0);
+        addInputField(inputPanel, "学生姓名:", nameField = new JTextField(), gbc, 1);
+        addInputField(inputPanel, "所在小组:", groupField = new JTextField(), gbc, 2);
+        addInputField(inputPanel, "学生学号:", studentIdField = new JTextField(), gbc, 3);
+
+        // 创建按钮面板
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        buttonPanel.setBorder(BorderFactory.createTitledBorder("操作区"));
+
+        // 创建按钮，不设置颜色
+        addButton = new JButton("添加学生");
+        removeButton = new JButton("删除学生");
+        editButton = new JButton("编辑信息");
+        backMainButton = new JButton("返回主菜单");
+
+        // 统一设置按钮字体和大小
+        addButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        removeButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        editButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        backMainButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+        // 设置按钮大小
+        Dimension buttonSize = new Dimension(120, 35);
+        addButton.setPreferredSize(buttonSize);
+        removeButton.setPreferredSize(buttonSize);
+        editButton.setPreferredSize(buttonSize);
+        backMainButton.setPreferredSize(buttonSize);
+
+        buttonPanel.add(addButton);
+        buttonPanel.add(removeButton);
+        buttonPanel.add(editButton);
+        buttonPanel.add(backMainButton);
+
+        // 保持原有的返回按钮监听器
+        backMainButton.addActionListener(e -> dispose());
+
+        // 创建显示区域
+        displayArea = new JTextArea();
+        displayArea.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        displayArea.setMargin(new Insets(5, 5, 5, 5));
+        JScrollPane scrollPane = new JScrollPane(displayArea);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("学生信息显示区"));
+
+        // 组装面板
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(inputPanel, BorderLayout.CENTER);
+        topPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+        setContentPane(mainPanel);
+    }
+
+    // 设置菜单栏
+    private void setupMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        
+        // 文件菜单
         JMenu fileMenu = new JMenu("文件");
         readItem = new JMenuItem("读取点名册");
         exportItem = new JMenuItem("导出点名册");
         fileMenu.add(readItem);
         fileMenu.add(exportItem);
 
-        // 创建设置菜单
+        // 设置菜单
         JMenu settingsMenu = new JMenu("设置");
         JMenu changeResolutionItem = new JMenu("更改分辨率");
-        JMenuItem px1 = new JMenuItem("原始大小");
-        JMenuItem px2 = new JMenuItem("600*450");
-        JMenuItem px3 = new JMenuItem("800*600");
-        changeResolutionItem.add(px1);
-        changeResolutionItem.add(px2);
-        changeResolutionItem.add(px3);
+        changeResolutionItem.add(new JMenuItem("原始大小"));
+        changeResolutionItem.add(new JMenuItem("600*450"));
+        changeResolutionItem.add(new JMenuItem("800*600"));
 
         JMenuItem changeLanguageItem = new JMenuItem("更改语言");
         changeLanguageItem.setAccelerator(KeyStroke.getKeyStroke('L', ActionEvent.CTRL_MASK));
@@ -66,117 +136,47 @@ public class StudentManagementView extends JFrame {
         settingsMenu.add(changeLanguageItem);
         settingsMenu.add(changeModeItem);
 
-        // 创建帮助菜单
+        // 帮助菜单
         JMenu helpMenu = new JMenu("帮助");
         JMenuItem helpItem = new JMenuItem("介绍文档");
         helpItem.setAccelerator(KeyStroke.getKeyStroke('H', ActionEvent.CTRL_MASK));
         helpMenu.add(helpItem);
 
-        // 将菜单添加到菜单栏
+        // 添加帮助菜单的事件监听器
+        helpItem.addActionListener(e -> {
+            int response = JOptionPane.showConfirmDialog(null, 
+                "这都要Readme?你去玩galgame吧", "那我顺从你", 
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (response == JOptionPane.OK_OPTION) {
+                try {
+                    Desktop.getDesktop().browse(new java.net.URI("https://www.touchgal.io/"));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
         menuBar.add(fileMenu);
         menuBar.add(settingsMenu);
         menuBar.add(helpMenu);
 
-
-        /*
-        // 为读取和导出选项添加事件监听
-        readItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                int returnValue = fileChooser.showOpenDialog(null);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    loadStudentsFromFile(selectedFile);
-                }
-                System.out.println("读取学生信息的逻辑未实现");
-            }
-        });
-
-        exportItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser saveFileChooser = new JFileChooser();
-                int returnValue = saveFileChooser.showSaveDialog(null);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File fileToSave = saveFileChooser.getSelectedFile();
-                    saveStudentsToFile(fileToSave);
-                }
-                System.out.println("保存学生信息的逻辑未实现");
-            }
-        });
-         */
-
-        // 帮助菜单的事件监听器
-        helpItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int response = JOptionPane.showConfirmDialog(null, "这都要Readme?你去玩galgame吧", "那我顺从你", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (response == JOptionPane.OK_OPTION) {
-                    try {
-                        Desktop.getDesktop().browse(new java.net.URI("https://www.touchgal.io/"));
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        // 将菜单栏设置为窗口的菜单栏
         setJMenuBar(menuBar);
+    }
 
-        // 创建一个6行2列的网格布局面板
-        JPanel panel = new JPanel(new GridLayout(6, 2));
+    // 辅助方法：添加输入字段
+    private void addInputField(JPanel panel, String label, JTextField field, GridBagConstraints gbc, int row) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 1;
+        JLabel jLabel = new JLabel(label);
+        jLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        panel.add(jLabel, gbc);
 
-        // 班级名 标签
-        panel.add(new JLabel("Class Name:"));    // 添加标签
-        classNameField = new JTextField();
-        panel.add(classNameField);               // 把文本字段添加到 panel 上
-
-        //学生名 标签
-        panel.add(new JLabel("Name:"));
-        nameField = new JTextField();
-        panel.add(nameField);
-
-        // 学生组名 标签
-        panel.add(new JLabel("Group:"));
-        groupField = new JTextField();
-        panel.add(groupField);
-
-        // 学生id 标签
-        panel.add(new JLabel("Student ID:"));
-        studentIdField = new JTextField();
-        panel.add(studentIdField);
-
-        // 添加学生按钮
-        addButton = new JButton("Add Student");
-        panel.add(addButton);
-
-        // 移除学生按钮
-        removeButton = new JButton("Remove Student");
-        panel.add(removeButton);
-
-        //编辑学生信息按钮
-        editButton = new JButton("Edit Student");
-        panel.add(editButton);
-
-        // 回到主菜单按钮
-        backMainButton = new JButton("Back to Main Menu");
-        panel.add(backMainButton);
-        backMainButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-
-        // 显示学生信息
-        displayArea = new JTextArea();   // 多行文本区域对象
-        JScrollPane scrollPane = new JScrollPane(displayArea);   // 添加到滚动面板，以免溢出
-
-        // 布局管理器，将panel 组件添加到容器的顶部，将滚动面板添加到容器的中心
-        add(panel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        field.setPreferredSize(new Dimension(200, 30));
+        field.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        panel.add(field, gbc);
     }
 
     private void loadStudentsFromFile(File file) {

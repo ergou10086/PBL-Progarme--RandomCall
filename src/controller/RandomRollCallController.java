@@ -30,6 +30,7 @@ public class RandomRollCallController {
         this.randomRollCallView.getStartButton().addActionListener(new StartRollCallListener());
         this.randomRollCallView.getEditScoreButton().addActionListener(new EditScoreListener());
         this.randomRollCallView.getCheckStudentScoreButton().addActionListener(new CheckStudentScoreListener());
+        this.randomRollCallView.getExportButton().addActionListener(new ExportScoreListener());
     }
 
     class StartRollCallListener implements ActionListener {
@@ -75,21 +76,37 @@ public class RandomRollCallController {
                 StringBuilder messageBuilder = new StringBuilder();
                 messageBuilder.append("Selected Group: ").append(selectedGroup).append("\n");
 
-                JPanel mainPanel = new JPanel();
-                mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-                mainPanel.add(new JLabel("Group: " + selectedGroup));
+                // 创建主面板，使用 BorderLayout
+                JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+                mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+                // 创建标题面板
+                JPanel titlePanel = new JPanel();
+                JLabel titleLabel = new JLabel("小组: " + selectedGroup);
+                titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
+                titlePanel.add(titleLabel);
+                mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+                // 创建学生信息面板
+                JPanel studentsPanel = new JPanel();
+                studentsPanel.setLayout(new BoxLayout(studentsPanel, BoxLayout.Y_AXIS));
+                
                 for (int i = 0; i < 2 && i < groupStudents.size(); i++) {
                     Student student = groupStudents.get(i);
-                    messageBuilder.append("Student: ").append(student.getClassName()).append(":").append(student.getName())
+                    messageBuilder.append("Student: ").append(student.getClassName())
+                            .append(":").append(student.getName())
                             .append(" (ID: ").append(student.getStudentId()).append(")\n");
 
+                    // 创建单个学生面板
                     JPanel studentPanel = new JPanel();
                     studentPanel.setLayout(new BoxLayout(studentPanel, BoxLayout.Y_AXIS));
+                    studentPanel.setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+                        "学生信息"));
 
                     // 添加学生照片
-                    ImageIcon studentImageIcon = student.getStudentImageIcon();
-                    if (studentImageIcon != null) {
+                    if (student.getStudentImageIcon() != null) {
+                        ImageIcon studentImageIcon = student.getStudentImageIcon();
                         int imageWidth = studentImageIcon.getIconWidth();
                         int imageHeight = studentImageIcon.getIconHeight();
                         if (imageWidth > 300 || imageHeight > 450) {
@@ -98,16 +115,35 @@ public class RandomRollCallController {
                             studentImageIcon = new ImageIcon(scaledImage);
                         }
                         JLabel imageLabel = new JLabel(studentImageIcon);
+                        imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
                         studentPanel.add(imageLabel);
+                        studentPanel.add(Box.createVerticalStrut(10));
                     }
 
-                    JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                    infoPanel.add(new JLabel("Student: " + student.getClassName() + ", " + student.getName()));
+                    // 学生基本信息面板
+                    JPanel infoPanel = new JPanel();
+                    infoPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+                    JLabel infoLabel = new JLabel(student.getClassName() + " - " + 
+                            student.getName() + " (学号: " + student.getStudentId() + ")");
+                    infoLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+                    infoPanel.add(infoLabel);
+                    studentPanel.add(infoPanel);
+                    studentPanel.add(Box.createVerticalStrut(5));
 
-                    JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                    scorePanel.add(new JLabel("Score: "));
+                    // 成绩编辑面板
+                    JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                    scorePanel.setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+                        "成绩信息"));
+                    JLabel scoreLabel = new JLabel("成绩: ");
+                    scoreLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
                     JTextField scoreField = new JTextField(student.getScore(), 10);
-                    JButton updateButton = new JButton("Update Score");
+                    scoreField.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+                    JButton updateButton = new JButton("更新成绩");
+                    updateButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+                    updateButton.setBackground(new Color(100, 180, 100));
+                    updateButton.setForeground(Color.WHITE);
+                    updateButton.setFocusPainted(false);
 
                     final Student finalStudent = student;
                     updateButton.addActionListener(e -> {
@@ -120,28 +156,32 @@ public class RandomRollCallController {
                         }
                     });
 
+                    scorePanel.add(scoreLabel);
                     scorePanel.add(scoreField);
                     scorePanel.add(updateButton);
-
-                    studentPanel.add(infoPanel);
                     studentPanel.add(scorePanel);
-                    mainPanel.add(studentPanel);
+
+                    studentsPanel.add(studentPanel);
+                    studentsPanel.add(Box.createVerticalStrut(10));
                 }
 
+                mainPanel.add(studentsPanel, BorderLayout.CENTER);
                 randomRollCallView.appendResult(messageBuilder.toString());
 
-                JDialog dialog = new JDialog(randomRollCallView, "Random Call Result", true);
+                // 创建对话框
+                JDialog dialog = new JDialog(randomRollCallView, "随机点名结果", true);
                 dialog.setLayout(new BorderLayout());
-
+                
+                // 添加滚动面板
                 JScrollPane scrollPane = new JScrollPane(mainPanel);
-                scrollPane.setPreferredSize(new Dimension(400, 300));
+                scrollPane.setPreferredSize(new Dimension(400, 600));
                 dialog.add(scrollPane, BorderLayout.CENTER);
 
                 dialog.pack();
                 dialog.setLocationRelativeTo(randomRollCallView);
                 dialog.setVisible(true);
             } else {
-                randomRollCallView.appendResult("No students in group: " + selectedGroup);
+                randomRollCallView.appendResult("该小组没有学生: " + selectedGroup);
             }
         }
 
@@ -152,11 +192,20 @@ public class RandomRollCallController {
                         selectedStudent.getName() + " (" + selectedStudent.getStudentId() + ")";
                 randomRollCallView.appendResult(result);
 
-                JPanel panel = new JPanel();
-                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                // 创建主面板，使用 BorderLayout
+                JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+                mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-                ImageIcon studentImageIcon = selectedStudent.getStudentImageIcon();
-                if (studentImageIcon != null) {
+                // 创建学生信息面板
+                JPanel studentPanel = new JPanel();
+                studentPanel.setLayout(new BoxLayout(studentPanel, BoxLayout.Y_AXIS));
+                studentPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+                    "学生信息"));
+
+                // 添加学生照片
+                if (selectedStudent.getStudentImageIcon() != null) {
+                    ImageIcon studentImageIcon = selectedStudent.getStudentImageIcon();
                     int imageWidth = studentImageIcon.getIconWidth();
                     int imageHeight = studentImageIcon.getIconHeight();
                     if (imageWidth > 300 || imageHeight > 450) {
@@ -165,27 +214,53 @@ public class RandomRollCallController {
                         studentImageIcon = new ImageIcon(scaledImage);
                     }
                     JLabel imageLabel = new JLabel(studentImageIcon);
-                    panel.add(imageLabel);
+                    imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    studentPanel.add(imageLabel);
+                    studentPanel.add(Box.createVerticalStrut(10));
                 }
 
-                JLabel infoLabel = new JLabel("Student: " + selectedStudent.getClassName() + ", " +
-                        selectedStudent.getName() + " (ID: " + selectedStudent.getStudentId() + ")");
-                panel.add(infoLabel);
+                // 学生基本信息面板
+                JPanel infoPanel = new JPanel();
+                infoPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+                JLabel infoLabel = new JLabel(selectedStudent.getClassName() + " - " + 
+                        selectedStudent.getName() + " (学号: " + selectedStudent.getStudentId() + ")");
+                infoLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+                infoPanel.add(infoLabel);
+                studentPanel.add(infoPanel);
+                studentPanel.add(Box.createVerticalStrut(10));
 
-                JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                JLabel scoreLabel = new JLabel("Score: ");
+                // 成绩编辑面板
+                JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                scorePanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+                    "成绩信息"));
+                JLabel scoreLabel = new JLabel("成绩: ");
+                scoreLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
                 JTextField scoreField = new JTextField(selectedStudent.getScore(), 10);
-                JButton updateButton = new JButton("Update Score");
+                scoreField.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+                JButton updateButton = new JButton("更新成绩");
+                updateButton.setBackground(new Color(100, 180, 100));
+                updateButton.setForeground(Color.WHITE);
+                updateButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+                updateButton.setFocusPainted(false);
 
                 scorePanel.add(scoreLabel);
                 scorePanel.add(scoreField);
                 scorePanel.add(updateButton);
-                panel.add(scorePanel);
+                studentPanel.add(scorePanel);
 
-                JDialog dialog = new JDialog(randomRollCallView, "Random Call Result", true);
+                mainPanel.add(studentPanel, BorderLayout.CENTER);
+
+                // 创建对话框
+                JDialog dialog = new JDialog(randomRollCallView, "随机点名结果", true);
                 dialog.setLayout(new BorderLayout());
-                dialog.add(panel, BorderLayout.CENTER);
+                
+                // 添加滚动面板
+                JScrollPane scrollPane = new JScrollPane(mainPanel);
+                scrollPane.setPreferredSize(new Dimension(400, 600));
+                dialog.add(scrollPane, BorderLayout.CENTER);
 
+                // 更新按钮事件
                 updateButton.addActionListener(e -> {
                     String newScore = scoreField.getText();
                     if (randomRollCallService.isValidScore(newScore)) {
@@ -200,7 +275,7 @@ public class RandomRollCallController {
                 dialog.setLocationRelativeTo(randomRollCallView);
                 dialog.setVisible(true);
             } else {
-                randomRollCallView.appendResult("No students available");
+                randomRollCallView.appendResult("没有可用的学生");
             }
         }
     }
@@ -273,6 +348,31 @@ public class RandomRollCallController {
 
             JOptionPane.showMessageDialog(randomRollCallView, scrollPane, "学生成绩名单",
                     JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    class ExportScoreListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                String desktopPath = System.getProperty("user.home") + "/Desktop";
+                String fileName = "学生成绩单_" + 
+                    new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".txt";
+                String fullPath = desktopPath + "/" + fileName;
+                
+                randomRollCallService.exportStudentScores(fullPath);
+                
+                JOptionPane.showMessageDialog(randomRollCallView,
+                    "成绩单已成功导出到桌面！\n文件名：" + fileName,
+                    "导出成功",
+                    JOptionPane.INFORMATION_MESSAGE);
+                    
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(randomRollCallView,
+                    "导出失败：" + ex.getMessage(),
+                    "错误",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 }

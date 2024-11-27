@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import model.Student;
 import service.RandomRollCallService;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
 
 public class RandomRollCallServiceImpl implements RandomRollCallService {
     private final RandomRollCallDao randomRollCallDao;
@@ -77,5 +81,26 @@ public class RandomRollCallServiceImpl implements RandomRollCallService {
     @Override
     public List<String> getAllClassNames() {
         return randomRollCallDao.getAllClassNames();
+    }
+
+    @Override
+    public void exportStudentScores(String filePath) throws IOException {
+        List<Student> students = randomRollCallDao.getAllStudents();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("成绩导出报告\n");
+            writer.write("导出时间：" + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "\n\n");
+            writer.write("班级,小组,学号,姓名,成绩\n");
+            
+            for (Student student : students) {
+                if (student.getScore() != null && !student.getScore().trim().isEmpty()) {
+                    writer.write(String.format("%s,%s,%s,%s,%s\n",
+                        student.getClassName(),
+                        student.getGroup(),
+                        student.getStudentId(),
+                        student.getName(),
+                        student.getScore()));
+                }
+            }
+        }
     }
 }

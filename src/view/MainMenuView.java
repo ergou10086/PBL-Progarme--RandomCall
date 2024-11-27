@@ -4,47 +4,57 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-// 主菜单界面类
 public class MainMenuView extends JFrame {
     private JButton randomRollCallButton;
     private JButton manageStudentsButton;
     private JButton switchAccounts;
     private LoginView loginView;
 
-    // 构造方法，用于初始化窗口及其组件，传入注册页面作为参数保证控制的始终是一个注册页面
     public MainMenuView(LoginView loginView) {
-        setTitle("Main Menu");  // 设置窗口的标题为Main Menu
-        setSize(300, 200);      // 窗口大小
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 窗口关闭
-        setLocationRelativeTo(null); // 居中显示
+        setTitle("学生管理系统");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        
+        this.loginView = loginView;
 
-        this.loginView = loginView; // 将传入的 loginView 赋值给实例变量
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // 创建一个网格布局面板
-        JPanel panel = new JPanel(new GridLayout(3, 1));
+        JLabel titleLabel = new JLabel("学生管理系统", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 24));
+        
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        
+        randomRollCallButton = createStyledButton("随机点名", new Color(100, 180, 100));
+        manageStudentsButton = createStyledButton("学生管理", new Color(70, 130, 180));
+        switchAccounts = createStyledButton("切换账号", new Color(180, 100, 100));
 
-        // 创建并添加按钮
-        randomRollCallButton = new JButton("Random Roll Call");
-        panel.add(randomRollCallButton);
-        manageStudentsButton = new JButton("Manage Students");
-        panel.add(manageStudentsButton);
-        switchAccounts = new JButton("Switch Accounts");
-        panel.add(switchAccounts);
+        buttonPanel.add(randomRollCallButton);
+        buttonPanel.add(manageStudentsButton);
+        buttonPanel.add(switchAccounts);
 
-        // 设置SwitchAccounts按钮的事件处理
-        switchAccounts.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loginView.setVisible(true); // 显示登录页面
-                dispose(); // 关闭主菜单窗口
-            }
+        switchAccounts.addActionListener(e -> {
+            loginView.setVisible(true);
+            dispose();
         });
 
-        // 将面板添加到窗口
-        add(panel);
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
+        mainPanel.add(buttonPanel, BorderLayout.CENTER);
+
+        setContentPane(mainPanel);
     }
 
-    // get，set方法
+    private JButton createStyledButton(String text, Color color) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("微软雅黑", Font.PLAIN, 16));
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(200, 40));
+        return button;
+    }
+
     public JButton getRandomRollCallButton() {
         return randomRollCallButton;
     }
@@ -55,17 +65,5 @@ public class MainMenuView extends JFrame {
 
     public JButton getSwitchAccounts() {
         return switchAccounts;
-    }
-
-    public void setRandomRollCallButton(JButton randomRollCallButton) {
-        this.randomRollCallButton = randomRollCallButton;
-    }
-
-    public void setManageStudentsButton(JButton manageStudentsButton) {
-        this.manageStudentsButton = manageStudentsButton;
-    }
-
-    public void setSwitchAccounts(JButton switchAccounts) {
-        this.switchAccounts = switchAccounts;
     }
 }
