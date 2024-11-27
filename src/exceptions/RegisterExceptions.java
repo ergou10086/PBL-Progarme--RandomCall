@@ -1,6 +1,13 @@
 package exceptions;
 
 public class RegisterExceptions extends RuntimeException {
+    // 无效用户异常
+    public static class InvalidUsernameException extends RuntimeException {
+        public InvalidUsernameException(String message) {
+            super(message);
+        }
+    }
+
     // 用户名已存在异常
     public static class UsernameAlreadyExistsException extends RuntimeException {
         public UsernameAlreadyExistsException(String message) {
