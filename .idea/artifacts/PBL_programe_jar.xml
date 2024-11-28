@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact name="PBL programe:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PBL_programe_jar</output-path>
+    <root id="root">
+      <element id="archive" name="PBL programe.jar">
+        <element id="module-output" name="PBL programe" />
+      </element>
+    </root>
+  </artifact>
+</component>
